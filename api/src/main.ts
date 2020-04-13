@@ -1,4 +1,5 @@
 import { Server } from 'colyseus';
+import { monitor } from '@colyseus/monitor';
 import { createServer } from 'http';
 import express from 'express';
 import { MjrtRoom } from './room';
@@ -13,5 +14,7 @@ const gameServer = new Server({
 });
 
 gameServer.define('game', MjrtRoom);
+
+app.use("/colyseus", monitor());
 
 gameServer.listen(port);

@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "@colyseus/monitor": "^0.12.2",
         "colyseus": "^0.12.6",
         "express": "^4.17.1"
     },

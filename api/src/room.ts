@@ -8,7 +8,14 @@ type JoinOptions = {
     nickname: string;
 };
 
+const asyncTimeout = (clock: any, time: number) =>
+    new Promise(resolve => {
+        clock.setTimeout(resolve, time);
+    });
+
 const timeBeforeLaunch = 10000;
+const timeToAnswer = 20000;
+const timeToSeeAnswers = 5000;
 
 export class MjrtRoom extends Room<State> {
     delayedLaunchTimer: Delayed | null = null;
@@ -21,25 +28,25 @@ export class MjrtRoom extends Room<State> {
     onJoin(client: Client, options: JoinOptions) {
         this.state.createPlayer(client.sessionId, options.nickname);
 
-        if (this.state.players.length === 15) {
+        if (Object.entries(this.state.players).length === 2) {
             this.clock.start();
             this.state.isAboutToStart(
                 this.clock.currentTime + timeBeforeLaunch
             );
+            
             this.delayedLaunchTimer = this.clock.setTimeout(
-                () => this.startGame,
+                () => this.startGame(),
                 timeBeforeLaunch
             );
         }
 
-        if (this.state.players.length === 50) {
+        if (Object.entries(this.state.players).length === 50) {
             this.delayedLaunchTimer?.clear();
             this.startGame();
         }
     }
 
-    onMessage(client: Client, message: any) {
-    }
+    onMessage(client: Client, message: any) {}
 
     startGame() {
         this.clock.clear();
@@ -48,7 +55,7 @@ export class MjrtRoom extends Room<State> {
         this.gameLoop();
     }
 
-    generateQuestion() {
+    generateQuestion(endTime: number) {
         // To refact after PoC - put it on a separate file
         const answersToAdd = [
             answers[Math.floor(Math.random() * answers.length)],
@@ -58,18 +65,31 @@ export class MjrtRoom extends Room<State> {
 
         this.state.setCurrentQuestion(
             questions[Math.floor(Math.random() * questions.length)],
-            answersToAdd
+            answersToAdd,
+            endTime
         );
     }
 
-    gameLoop() {
-        const remainingPlayers = Object.entries(this.state.getPlayers()).filter(entry => entry[1].getLives() > 0).length;
+    async gameLoop() {
+        const remainingPlayers = Object.entries(this.state.players).filter(
+            entry => entry[1].lives > 0
+        ).length;
+
         if (remainingPlayers === 2) {
+            this.clock.clear();
+            this.state.finishGame();
             return;
         }
 
-        this.generateQuestion();
+        this.clock.start();
+        const endTime = this.clock.currentTime + timeToAnswer;
+        this.generateQuestion(endTime);
+        await asyncTimeout(this.clock, timeToAnswer);
 
-        setTimeout(this.gameLoop, 10000);
+        this.clock.start();
+        const seeAnswersTime = this.clock.currentTime + timeToSeeAnswers;
+        this.state.displayScores(seeAnswersTime);
+        await asyncTimeout(this.clock, timeToSeeAnswers);
+        this.gameLoop();
     }
 }

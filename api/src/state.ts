@@ -11,14 +11,10 @@ enum GameState {
 
 export class State extends Schema {
     gameState = GameState.WaitingForPlayers;
-    startTime: number | null = null;
+    nextStepTime: number = 0;
     players = new MapSchema<Player>();
-    currentQuestion: string | null = null;
+    currentQuestion: string = '';
     currentAnswers = new ArraySchema<string>();
-
-    getPlayers() {
-        return this.players;
-    }
 
     createPlayer(id: string, nickname: string) {
         this.players[id] = new Player(nickname);
@@ -28,22 +24,36 @@ export class State extends Schema {
         delete this.players[id];
     }
 
-    isAboutToStart(startTime: number) {
-        this.startTime = startTime;
+    isAboutToStart(nextStepTime: number) {
+        this.nextStepTime = nextStepTime;
         this.gameState = GameState.AboutToStart;
     }
 
-    setCurrentQuestion(question: string, answers: string[]) {
+    setCurrentQuestion(
+        question: string,
+        answers: string[],
+        nextStepTime: number
+    ) {
         this.currentQuestion = question;
         this.currentAnswers = new ArraySchema<string>(...answers);
         this.gameState = GameState.WaitingForAnswers;
+        this.nextStepTime = nextStepTime;
+    }
+
+    displayScores(nextStepTime: number) {
+        this.gameState = GameState.AboutToSendNextQuestion;
+        this.nextStepTime = nextStepTime;
+    }
+
+    finishGame() {
+        this.gameState = GameState.Finished;
     }
 }
 
 defineTypes(State, {
-    gameState: "number",
-    startTime: "number",
+    gameState: 'number',
+    nextStepTime: 'number',
     players: { map: Player },
-    currentquestion: "string",
-    currentAnswers: ["string"]
+    currentQuestion: 'string',
+    currentAnswers: ['string']
 });

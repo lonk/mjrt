@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@colyseus/monitor@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@colyseus/monitor/-/monitor-0.12.2.tgz#509f890d5c4f8cbc6407a1e8997e591a89da2a56"
+  integrity sha512-48oZxz4uVZszhyWf2NqCNXw3mlIGhRgUYOwBu6/e6XGD82qS0VQRdfOg5neplJLPvZSSNyKnEz3G5mVzc7iYsQ==
+  dependencies:
+    express "^4.16.3"
+    node-os-utils "^1.2.0"
+
 "@colyseus/schema@^0.5.19":
   version "0.5.36"
   resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-0.5.36.tgz#d34b30a398bf9ac522279ce4e1486447c5b8b913"
@@ -394,7 +402,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-express@^4.17.1:
+express@^4.16.3, express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"
   integrity sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==
@@ -833,6 +841,11 @@ node-notifier@^5.4.0:
     semver "^5.5.0"
     shellwords "^0.1.1"
     which "^1.3.0"
+
+node-os-utils@^1.2.0:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/node-os-utils/-/node-os-utils-1.2.2.tgz#57acb6a26a79314a0156804b3f347608db406571"
+  integrity sha512-QepEuY8kw+kRPdpciSSB2AFLM76RNRiSxtlXG5AisIQ8ow9tuSZ/QiS8cFro1iA843ZjSvaoM8DGa8R9loDlWA==
 
 nonenumerable@^1.0.1:
   version "1.1.1"

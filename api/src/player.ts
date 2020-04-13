@@ -9,19 +9,17 @@ enum PlayerStatus {
 enum ChosenAnswer {
     QuestionA,
     QuestionB,
-    QuestionC
+    QuestionC,
+    Answered,
+    None
 }
 
 export class Player extends Schema {
-    nickname: string | null = null;
+    nickname: string = '';
     playerStatus = PlayerStatus.Waiting;
-    answer: ChosenAnswer | null = null;
-    hiddenAnswer: ChosenAnswer | null = null;
+    answer: ChosenAnswer = ChosenAnswer.None;
+    hiddenAnswer: ChosenAnswer = ChosenAnswer.None;
     lives: number = 3;
-
-    getLives() {
-        return this.lives;
-    }
 
     super(nickname: string) {
         this.nickname = nickname;
@@ -29,11 +27,12 @@ export class Player extends Schema {
 
     setAnswer(answer: ChosenAnswer) {
         this.hiddenAnswer = answer;
+        this.answer = ChosenAnswer.Answered;
     }
 
     resetAnswer() {
-        this.answer = null;
-        this.hiddenAnswer = null;
+        this.answer = ChosenAnswer.None;
+        this.hiddenAnswer = ChosenAnswer.None;
     }
 
     displayAnswer() {
