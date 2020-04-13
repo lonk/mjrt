@@ -1,11 +1,16 @@
 import { Room, Client, Delayed } from 'colyseus';
-import { State } from './state';
+import { State, GameState } from './state';
+import { ChosenAnswer } from './player';
 
 import questions from '../database/vox-questions.json';
 import answers from '../database/vox-answers.json';
 
 type JoinOptions = {
     nickname: string;
+};
+
+type ClientMessage = {
+    vote: ChosenAnswer
 };
 
 const asyncTimeout = (clock: any, time: number) =>
@@ -46,7 +51,13 @@ export class MjrtRoom extends Room<State> {
         }
     }
 
-    onMessage(client: Client, message: any) {}
+    onMessage(client: Client, message: ClientMessage) {
+        if (this.state.gameState !== GameState.WaitingForAnswers) {
+            return;
+        }
+        
+        this.state.setPlayerChoice(client.sessionId, message.vote)
+    }
 
     startGame() {
         this.clock.clear();
@@ -89,6 +100,9 @@ export class MjrtRoom extends Room<State> {
         this.clock.start();
         const seeAnswersTime = this.clock.currentTime + timeToSeeAnswers;
         this.state.displayScores(seeAnswersTime);
+
+        // TODO: remove lives
+
         await asyncTimeout(this.clock, timeToSeeAnswers);
         this.gameLoop();
     }

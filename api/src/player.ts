@@ -6,7 +6,7 @@ enum PlayerStatus {
     Answered
 }
 
-enum ChosenAnswer {
+export enum ChosenAnswer {
     QuestionA,
     QuestionB,
     QuestionC,

@@ -1,7 +1,7 @@
 import { Schema, MapSchema, ArraySchema, defineTypes } from '@colyseus/schema';
-import { Player } from './player';
+import { Player, ChosenAnswer } from './player';
 
-enum GameState {
+export enum GameState {
     WaitingForPlayers,
     AboutToStart,
     WaitingForAnswers,
@@ -20,8 +20,20 @@ export class State extends Schema {
         this.players[id] = new Player(nickname);
     }
 
-    removePlayer(id: string) {
-        delete this.players[id];
+    setPlayerChoice(id: string, choice: ChosenAnswer) {
+        (this.players[id] as Player).setAnswer(choice);
+    }
+
+    displayPlayersAnswer() {
+        for (let playerId in this.players) {
+            (this.players[playerId] as Player).displayAnswer();
+        }
+    }
+
+    resetPlayersAnswer() {
+        for (let playerId in this.players) {
+            (this.players[playerId] as Player).resetAnswer();
+        }
     }
 
     isAboutToStart(nextStepTime: number) {
@@ -38,9 +50,11 @@ export class State extends Schema {
         this.currentAnswers = new ArraySchema<string>(...answers);
         this.gameState = GameState.WaitingForAnswers;
         this.nextStepTime = nextStepTime;
+        this.resetPlayersAnswer();
     }
 
     displayScores(nextStepTime: number) {
+        this.displayPlayersAnswer();
         this.gameState = GameState.AboutToSendNextQuestion;
         this.nextStepTime = nextStepTime;
     }
