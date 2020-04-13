@@ -2,27 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { serverClient } from '../../server';
 
+enum ServerState {
+    Connecting,
+    Connected,
+    Error
+}
+
 export default function Play() {
     const history = useHistory();
-    const [nickname, setNickname] = useState('');
+    const [nickname, setNickname] = useState(localStorage.getItem('nickname'));
+    const [serverStatus, setServerStatus] = useState(ServerState.Connecting);
 
     const joinServer = async () => {
-        const availableRooms = await serverClient.getAvailableRooms();
+        try {
+            await serverClient.joinOrCreate('game', { nickname });
+        } catch {
+            return setServerStatus(ServerState.Error);
+        }
 
-        console.log(availableRooms);
+        setServerStatus(ServerState.Connected);
     };
 
     useEffect(() => {
-        const storedNickname = localStorage.getItem('nickname');
-
-        if (!storedNickname) {
+        if (!nickname) {
             history.push('/');
             return;
         }
 
-        setNickname(storedNickname);
         joinServer();
     }, []);
 
-    return <div>Lancer la partie</div>;
+    const connecting = <div>Connexion au serveur en cours...</div>;
+    const error = <div>Connexion au serveur impossible.</div>;
+    const success = <div>Connecté au serveur</div>;
+
+    if (serverStatus === ServerState.Error) {
+        return error;
+    } else if (serverStatus === ServerState.Connecting) {
+        return connecting;
+    }
+
+    return success;
 }
