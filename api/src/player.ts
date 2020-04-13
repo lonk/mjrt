@@ -7,9 +7,9 @@ enum PlayerStatus {
 }
 
 export enum ChosenAnswer {
-    QuestionA,
-    QuestionB,
-    QuestionC,
+    A,
+    B,
+    C,
     Answered,
     None
 }
@@ -37,6 +37,10 @@ export class Player extends Schema {
 
     displayAnswer() {
         this.answer = this.hiddenAnswer;
+    }
+
+    removeALife() {
+        this.lives -= 1;
     }
 }
 

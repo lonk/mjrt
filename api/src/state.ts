@@ -31,8 +31,26 @@ export class State extends Schema {
     }
 
     resetPlayersAnswer() {
+        // Todo: refact after PoC
+        const votes: Map<ChosenAnswer, number> = new Map();
+
         for (let playerId in this.players) {
-            (this.players[playerId] as Player).resetAnswer();
+            const player = this.players[playerId] as Player;
+            votes.set(player.answer, (votes.get(player.answer) || 0) + 1);
+        }
+
+        const winningAnswer = Array.from(votes.entries())
+            .sort((left, right) => left[1] - right[0])
+            .shift()![0];
+        
+        for (let playerId in this.players) {
+            const player = this.players[playerId] as Player;
+            
+            if (player.answer !== winningAnswer) {
+                player.removeALife();
+            }
+
+            player.resetAnswer();
         }
     }
 
