@@ -1,8 +1,5 @@
-import schema, { Schema, MapSchema, ArraySchema } from '@colyseus/schema';
+import { Schema, MapSchema, ArraySchema, defineTypes } from '@colyseus/schema';
 import { Player } from './player';
-
-import questions from '../database/vox-questions.json';
-import answers from '../database/vox-answers.json';
 
 enum GameState {
     WaitingForPlayers,
@@ -19,6 +16,10 @@ export class State extends Schema {
     currentQuestion: string | null = null;
     currentAnswers = new ArraySchema<string>();
 
+    getPlayers() {
+        return this.players;
+    }
+
     createPlayer(id: string, nickname: string) {
         this.players[id] = new Player(nickname);
     }
@@ -32,20 +33,14 @@ export class State extends Schema {
         this.gameState = GameState.AboutToStart;
     }
 
-    generateQuestion() {
-        // To refact after PoC
-        this.currentQuestion = questions[Math.floor(Math.random() * questions.length)];
-        const answersToAdd = [
-            answers[Math.floor(Math.random() * answers.length)],
-            answers[Math.floor(Math.random() * answers.length)],
-            answers[Math.floor(Math.random() * answers.length)]
-        ];
-
-        this.currentAnswers = new ArraySchema<string>(...answersToAdd);
+    setCurrentQuestion(question: string, answers: string[]) {
+        this.currentQuestion = question;
+        this.currentAnswers = new ArraySchema<string>(...answers);
+        this.gameState = GameState.WaitingForAnswers;
     }
 }
 
-schema.defineTypes(State, {
+defineTypes(State, {
     gameState: "number",
     startTime: "number",
     players: { map: Player },

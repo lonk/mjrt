@@ -1,4 +1,4 @@
-import schema, { Schema } from '@colyseus/schema';
+import { defineTypes, Schema } from '@colyseus/schema';
 
 enum PlayerStatus {
     Waiting,
@@ -17,6 +17,11 @@ export class Player extends Schema {
     playerStatus = PlayerStatus.Waiting;
     answer: ChosenAnswer | null = null;
     hiddenAnswer: ChosenAnswer | null = null;
+    lives: number = 3;
+
+    getLives() {
+        return this.lives;
+    }
 
     super(nickname: string) {
         this.nickname = nickname;
@@ -36,8 +41,9 @@ export class Player extends Schema {
     }
 }
 
-schema.defineTypes(Player, {
+defineTypes(Player, {
     nickname: "string",
     playerStatus: "number",
-    answer: "number"
+    answer: "number",
+    lives: "number"
 });
