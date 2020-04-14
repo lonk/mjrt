@@ -27,10 +27,15 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
 
         io.to(roomId).emit('gameState', { gameState: GameState.AboutToStart });
 
-        setTimeout(generateQuestion, 10000);
+        setTimeout(() => generateQuestion(), 10000);
     };
 
     const generateQuestion = () => {
+        for (const player of players) {
+            player.answer = null;
+            player.hiddenAnswer = null;
+        }
+
         const question =
             questions[Math.floor(Math.random() * questions.length)];
         const generatedAnswers = [
@@ -48,30 +53,60 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
 
-        setTimeout(endTurn, 5000);
+        setTimeout(() => endTurn(), 5000);
     };
 
     const endTurn = () => {
+        const answersScores: Map<ChosenAnswer, number> = new Map();
+
         for (const player of players) {
             player.answer = player.hiddenAnswer;
-            player.lives -= 1;
+
+            if (!player.answer) {
+                continue;
+            }
+
+            const currentAnswerScore = answersScores.get(player.answer) || 0;
+            answersScores.set(player.answer, currentAnswerScore + 1);
+        }
+
+        let max = 0;
+        const winningAnswers = Array.from(answersScores.entries()).reduce(
+            (winners, [key, amount]) => {
+                if (amount > max) {
+                    max = amount;
+                    return [key];
+                } else if (amount === max) {
+                    return [...winners, key];
+                }
+
+                return winners;
+            },
+            [] as ChosenAnswer[]
+        );
+
+        let playersAlive = 0;
+        for (const player of players) {
+            if (
+                !player.answer ||
+                winningAnswers.indexOf(player.answer) === -1
+            ) {
+                player.lives = Math.max(player.lives - 1, 0);
+            }
+
+            if (player.lives > 0) {
+                playersAlive += 1;
+            }
         }
 
         io.to(roomId).emit('gameState', { gameState: GameState.DisplayScores });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
 
-        for (const player of players) {
-            player.answer = null;
-            player.hiddenAnswer = null;
-        }
-
-        const playersAlives = players.filter(({ lives }) => lives > 0).length;
-
-        if (playersAlives <= 2) {
+        if (playersAlive <= 2) {
             return endGame();
         }
 
-        setTimeout(generateQuestion, 5000);
+        setTimeout(() => generateQuestion(), 5000);
     };
 
     const endGame = () => {

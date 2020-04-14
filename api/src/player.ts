@@ -18,7 +18,7 @@ export interface Player {
 export const buildPlayer = (socket: SocketIO.Socket, nickname: string): Player => ({
     socket,
     nickname,
-    lives: 3,
+    lives: 2,
     answer: null,
     hiddenAnswer: null
 });
