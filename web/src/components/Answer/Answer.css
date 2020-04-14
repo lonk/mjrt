@@ -1,0 +1,40 @@
+.answer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #315325;
+    min-width: 100px;
+    border-radius: 4px;
+    padding: 5px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.answer-letter {
+    font-weight: bold;
+    font-size: 16px;
+    padding-right: 10px;
+}
+
+.answer-content {
+    flex: 1;
+}
+
+.answer-score {
+    font-weight: bold;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+.a {
+    background: #FBC93D;
+}
+
+.b {
+    background: #6CC0E5;
+}
+
+.c {
+    background: #FB4F4F;
+}

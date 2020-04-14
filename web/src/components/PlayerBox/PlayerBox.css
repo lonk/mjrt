@@ -1,6 +1,8 @@
 .player {
-    width: 100px;
-    border: 1px solid black;
+    min-width: 100px;
+    border: 1px solid #315325;
+    background: white;
+    border-radius: 4px;
     padding: 15px 10px;
     margin: 5px;
     display: inline-flex;
@@ -11,17 +13,17 @@
 }
 
 .a {
-    background: red;
+    background: #FBC93D;
 }
 
 .b {
-    background: blue;
+    background: #6CC0E5;
 }
 
 .c {
-    background: green;
+    background: #FB4F4F;
 }
 
 .answered {
-    background: lightgrey;
+    background: #99CC9F;
 }

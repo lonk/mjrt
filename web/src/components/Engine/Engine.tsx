@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { serverClient } from '../../server';
 import PlayerBox from '../PlayerBox/PlayerBox';
+import Top from '../Top/Top';
+import Answer from '../Answer/Answer';
+
 import './Engine.css';
 
 // Todo: put it in root
@@ -29,6 +32,7 @@ export type Player = {
 
 export type GameStateMessage = {
     gameState: GameState;
+    nextState?: number;
 };
 
 export type CurrentQuestionMessage = {
@@ -40,20 +44,20 @@ export type PlayersMessage = {
     players: Player[];
 };
 
-export type PlayerVoteMessage = {
-    id: string;
-    vote: ChosenAnswer | null;
-};
-
 export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
     const [currentQuestion, setCurrentQuestion] = useState<string>('');
     const [currentAnswers, setCurrentAnswers] = useState<string[]>([]);
     const [players, setPlayers] = useState<Player[]>([]);
+    const [countdown, setCountdown] = useState<number | undefined>();
 
-    serverClient.on('gameState', ({ gameState }: GameStateMessage) => {
-        setGameState(gameState);
-    });
+    serverClient.on(
+        'gameState',
+        ({ gameState, nextState }: GameStateMessage) => {
+            setGameState(gameState);
+            setCountdown(nextState);
+        }
+    );
 
     serverClient.on(
         'currentQuestion',
@@ -67,70 +71,72 @@ export default function Engine() {
         setPlayers(message.players);
     });
 
-    const voteAnswer = (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        vote: ChosenAnswer
-    ) => {
-        event.preventDefault();
+    const voteAnswer = (vote: ChosenAnswer) => {
         serverClient.emit('vote', { vote });
     };
 
-    const question = (
-        <div>
-            <strong>Question:</strong> {currentQuestion}
-            <br />
-        </div>
-    );
+    const question = <div className="engine-question">{currentQuestion}</div>;
     const answer = (
-        <div>
-            <strong>Réponses:</strong>
-            <br />
-            <button onClick={e => voteAnswer(e, ChosenAnswer.A)}>
-                A. {currentAnswers[0]}
-            </button>
-            <br />
-            <button onClick={e => voteAnswer(e, ChosenAnswer.B)}>
-                B. {currentAnswers[1]}
-            </button>
-            <br />
-            <button onClick={e => voteAnswer(e, ChosenAnswer.C)}>
-                C. {currentAnswers[2]}
-            </button>
+        <div className="engine-answers">
+            <Answer
+                letter="A"
+                answer={currentAnswers[0]}
+                score={
+                    gameState === GameState.DisplayScores &&
+                    players.filter(player => player.answer === ChosenAnswer.A)
+                        .length
+                }
+                onClick={() => voteAnswer(ChosenAnswer.A)}
+            />
+            <Answer
+                letter="B"
+                answer={currentAnswers[1]}
+                score={
+                    gameState === GameState.DisplayScores &&
+                    players.filter(player => player.answer === ChosenAnswer.B)
+                        .length
+                }
+                onClick={() => voteAnswer(ChosenAnswer.B)}
+            />
+            <Answer
+                letter="C"
+                answer={currentAnswers[2]}
+                score={
+                    gameState === GameState.DisplayScores &&
+                    players.filter(player => player.answer === ChosenAnswer.C)
+                        .length
+                }
+                onClick={() => voteAnswer(ChosenAnswer.C)}
+            />
         </div>
     );
 
     const waitingForPlayers = (
-        <div>En attente des joueurs (5 joueurs minimum)</div>
+        <span>En attente des joueurs (5 joueurs minimum)</span>
     );
 
-    const aboutToLock = (
-        <div>Plus que 10 secondes avant le verrouillage de la salle !</div>
-    );
+    const aboutToLock = <div>En attente des derniers joueurs.</div>;
 
     const aboutToStart = (
-        <div>
-            Les joueurs sont au complet ! La partie démarre dans 10 secondes...
-        </div>
+        <div>Les joueurs sont au complet ! La partie va pouvoir commencer.</div>
     );
 
     const finished = <div>Partie terminée.</div>;
 
     return (
         <div className="engine">
-            {gameState === GameState.WaitingForPlayers && waitingForPlayers}
-            {gameState === GameState.AboutToLock && aboutToLock}
-            {gameState === GameState.AboutToStart && aboutToStart}
-            {gameState === GameState.Finished && finished}
-            {(gameState === GameState.DisplayScores ||
-                gameState === GameState.WaitingForAnswers) &&
-                currentQuestion &&
-                question}
-            {(gameState === GameState.DisplayScores ||
-                gameState === GameState.WaitingForAnswers) &&
-                currentAnswers.length > 0 &&
-                answer}
-            <strong>Joueurs:</strong>
-            <br />
+            <Top countdown={countdown}>
+                {gameState === GameState.WaitingForPlayers && waitingForPlayers}
+                {gameState === GameState.AboutToLock && aboutToLock}
+                {gameState === GameState.AboutToStart && aboutToStart}
+                {gameState === GameState.Finished && finished}
+                {(gameState === GameState.DisplayScores ||
+                    gameState === GameState.WaitingForAnswers) &&
+                    question}
+                {(gameState === GameState.WaitingForAnswers ||
+                    gameState === GameState.DisplayScores) &&
+                    answer}
+            </Top>
             <div className="players">
                 {players.map(player => (
                     <PlayerBox key={player.id} player={player} />

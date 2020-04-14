@@ -29,7 +29,10 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             });
         }
 
-        io.to(roomId).emit('gameState', { gameState: GameState.AboutToStart });
+        io.to(roomId).emit('gameState', {
+            gameState: GameState.AboutToStart,
+            nextState: timeBeforeGameLaunch + Date.now()
+        });
 
         setTimeout(() => generateQuestion(), timeBeforeGameLaunch);
     };
@@ -53,7 +56,8 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             answers: generatedAnswers
         });
         io.to(roomId).emit('gameState', {
-            gameState: GameState.WaitingForAnswers
+            gameState: GameState.WaitingForAnswers,
+            nextState: timeToAnswer + Date.now()
         });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
 
@@ -103,11 +107,14 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             }
         }
 
-        io.to(roomId).emit('gameState', { gameState: GameState.DisplayScores });
+        io.to(roomId).emit('gameState', {
+            gameState: GameState.DisplayScores,
+            nextState: timeToDisplayAnswers + Date.now()
+        });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
 
         if (playersAlive <= 2) {
-            return endGame();
+            return setTimeout(() => endGame(), timeToDisplayAnswers);
         }
 
         setTimeout(() => generateQuestion(), timeToDisplayAnswers);

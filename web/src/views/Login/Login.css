@@ -1,0 +1,66 @@
+.login {
+    width: 400px;
+    margin: 10px auto;
+}
+
+.login-mjrt {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.login-content {
+    margin-top: 10px;
+    padding: 15px;
+    background: #E2E2E3;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.login-list {
+    list-style: decimal;
+    text-align: left;
+    width: 220px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-loginForm {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-nickname {
+    width: 200px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    border: 1px solid #315325;
+    border-radius: 8px 0 0 8px;
+}
+
+.login-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    line-height: 40px;
+    padding: 0 16px;
+    min-width: 65px;
+
+    background-color: #3A612C;
+    border-top: 1px solid #315325;
+    border-bottom: 1px solid #315325;
+    border-right: 1px solid #315325;
+    border-left: 0px;
+    border-radius: 0 8px 8px 0;
+    color: white;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+
+}

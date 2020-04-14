@@ -1,3 +1,38 @@
+.engine {
+    max-width: 700px;
+    margin: auto;
+}
+
 .players {
     display: flex;
-};
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: #E2E2E3;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.engine-question {
+    width: 90%;
+    padding: 10px;
+    background: #D3AE37;
+    margin: auto;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.engine-answers {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 90%;
+    padding-top: 15px;
+}
+
+.engine-answer {
+    width: 30%;
+    height: 40px;
+}
