@@ -1,15 +1,21 @@
 .player {
-    min-width: 100px;
-    border: 1px solid #315325;
+    width: 63px;
+    height: 30px;
+    border: 1px solid #222;
     background: white;
-    border-radius: 4px;
-    padding: 15px 10px;
-    margin: 5px;
+    padding: 10px 10px;
     display: inline-flex;
+    flex-direction: column;
 }
 
 .nickname {
     flex: 1;
+}
+
+.lives {
+    text-align: right;
+    font-size: 12px;
+    color: #FB4F4F;
 }
 
 .a {
@@ -21,9 +27,13 @@
 }
 
 .c {
-    background: #FB4F4F;
+    background: #9ACD45;
 }
 
 .answered {
     background: #99CC9F;
+}
+
+.dead {
+    background: rgba(255, 255, 255, 0.2);
 }

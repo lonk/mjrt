@@ -138,9 +138,11 @@ export default function Engine() {
                     answer}
             </Top>
             <div className="players">
-                {players.map(player => (
-                    <PlayerBox key={player.id} player={player} />
-                ))}
+                <div className="players-container">
+                    {players.map(player => (
+                        <PlayerBox key={player.id} player={player} />
+                    ))}
+                </div>
             </div>
         </div>
     );

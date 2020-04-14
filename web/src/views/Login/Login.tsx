@@ -19,28 +19,27 @@ export default function Login() {
                 <img src="./logo.png" alt="MJRT" width="250" />
             </div>
             <div className="login-content">
-                <strong>Bienvenue sur Mjrt</strong>
-                <ul className="login-list">
-                    <li>Une question, trois réponses</li>
-                    <li>Deux vies</li>
-                    <li>Votez comme la majorité</li>
-                    <li>Soyez le dernier survivant</li>
-                </ul>
-                La partie se lance dix secondes après l'arrivée du cinquième joueur.
-                <form onSubmit={submitLogin} className="login-loginForm">
-                    <input
-                        type="text"
-                        className="login-nickname"
-                        name="nickname"
-                        placeholder="Pseudo (3 caractères min.)"
-                        pattern="\w{3,}"
-                        required
-                        value={nickname}
-                        onChange={e => setNickname(e.target.value)}
-                        title="Veuillez utiliser au minimum 3 caractères alphanumériques"
-                    />
-                    <input type="submit" value="OK" className="login-submit" />
-                </form>
+                <div className="login-card">
+                Une question, trois réponses.<br />
+                Choisissez comme la majorité pour rester en vie.<br />
+                Combien de tours survivrez-vous ?
+
+                    <form onSubmit={submitLogin} className="login-loginForm">
+                        <input
+                            type="text"
+                            className="login-nickname"
+                            name="nickname"
+                            placeholder="Pseudo (3 caractères min.)"
+                            pattern="\w{3,}"
+                            required
+                            value={nickname}
+                            onChange={e => setNickname(e.target.value)}
+                            title="Veuillez utiliser au minimum 3 caractères alphanumériques"
+                        />
+                        <input type="submit" value="JOUER" className="login-submit" />
+                    </form>
+                    La partie se lance dix secondes après l'arrivée du cinquième joueur.
+                </div>
             </div>
         </div>
     );

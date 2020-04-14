@@ -5,9 +5,9 @@ import { GameState } from '../game';
 import questions from '../../database/vox-questions.json';
 import answers from '../../database/vox-answers.json';
 
-const timeBeforeGameLaunch = 10000;
-const timeToAnswer = 15000;
-const timeToDisplayAnswers = 10000;
+const timeBeforeGameLaunch = 5000;
+const timeToAnswer = 10000;
+const timeToDisplayAnswers = 5000;
 
 interface BuilderPayload {
     roomId: string;
@@ -16,10 +16,17 @@ interface BuilderPayload {
 
 export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
     let players: Player[] = idlePlayers;
+    let gameState: GameState = GameState.AboutToStart;
 
     const prepareGame = () => {
         for (const player of players) {
             player.socket.on('vote', (message: any) => {
+                if (
+                    player.lives === -1 ||
+                    gameState !== GameState.WaitingForAnswers
+                )
+                    return;
+
                 player.hiddenAnswer = message.vote;
                 player.answer = ChosenAnswer.Answered;
 
@@ -30,7 +37,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         }
 
         io.to(roomId).emit('gameState', {
-            gameState: GameState.AboutToStart,
+            gameState,
             nextState: timeBeforeGameLaunch + Date.now()
         });
 
@@ -55,8 +62,9 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             question,
             answers: generatedAnswers
         });
+        gameState = GameState.WaitingForAnswers;
         io.to(roomId).emit('gameState', {
-            gameState: GameState.WaitingForAnswers,
+            gameState,
             nextState: timeToAnswer + Date.now()
         });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
@@ -70,7 +78,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         for (const player of players) {
             player.answer = player.hiddenAnswer;
 
-            if (!player.answer) {
+            if (player.answer == null) {
                 continue;
             }
 
@@ -96,19 +104,20 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         let playersAlive = 0;
         for (const player of players) {
             if (
-                !player.answer ||
+                player.answer === null ||
                 winningAnswers.indexOf(player.answer) === -1
             ) {
-                player.lives = Math.max(player.lives - 1, 0);
+                player.lives = Math.max(player.lives - 1, -1);
             }
 
-            if (player.lives > 0) {
+            if (player.lives > -1) {
                 playersAlive += 1;
             }
         }
 
+        gameState = GameState.DisplayScores;
         io.to(roomId).emit('gameState', {
-            gameState: GameState.DisplayScores,
+            gameState,
             nextState: timeToDisplayAnswers + Date.now()
         });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
@@ -121,7 +130,8 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
     };
 
     const endGame = () => {
-        io.to(roomId).emit('gameState', { gameState: GameState.Finished });
+        gameState = GameState.Finished;
+        io.to(roomId).emit('gameState', { gameState });
     };
 
     return { prepareGame };

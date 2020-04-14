@@ -7,7 +7,7 @@ import './App.css';
 export default function App() {
     return (
         <Router>
-            <div>
+            <div className="app">
                 <Route exact path="/">
                     <Login />
                 </Route>

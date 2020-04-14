@@ -1,15 +1,6 @@
 .top {
-    display: flex;
     min-height: 140px;
-    padding: 10px;
     position: relative;
-}
-
-@media screen and (max-width: 640px) {
-    .top {
-        flex-direction: column;
-        align-items: center;
-    }
 }
 
 .top-content {
@@ -29,5 +20,4 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0 0 4px 4px;
 }
