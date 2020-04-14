@@ -1,3 +1,5 @@
-import { Client } from 'colyseus.js';
+import io from 'socket.io-client';
 
-export const buildServer = () => new Client('ws://localhost:3001');
+export const buildServer = () => {
+    return io('http://localhost:3001');
+};

@@ -1,20 +1,16 @@
-import { Server } from 'colyseus';
-import { monitor } from '@colyseus/monitor';
-import { createServer } from 'http';
 import express from 'express';
-import { MjrtRoom } from './room';
-
-const port = Number(process.env.port) || 3001;
+import http from 'http';
+import SocketIO from 'socket.io';
+import { roomsManager } from './game/roomsManager';
 
 const app = express();
-app.use(express.json());
+const server = http.createServer(app);
+export const io = SocketIO(server);
 
-const gameServer = new Server({
-    server: createServer(app)
+io.on('connection', (socket: SocketIO.Socket) => {
+    socket.on('setNickname', (payload: any) => {
+        roomsManager.joinIdleRoom(socket, payload.nickname);
+    });
 });
 
-gameServer.define('game', MjrtRoom);
-
-app.use("/colyseus", monitor());
-
-gameServer.listen(port);
+server.listen(3001);

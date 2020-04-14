@@ -1,0 +1,27 @@
+.player {
+    width: 100px;
+    border: 1px solid black;
+    padding: 15px 10px;
+    margin: 5px;
+    display: inline-flex;
+}
+
+.nickname {
+    flex: 1;
+}
+
+.a {
+    background: red;
+}
+
+.b {
+    background: blue;
+}
+
+.c {
+    background: green;
+}
+
+.answered {
+    background: lightgrey;
+}

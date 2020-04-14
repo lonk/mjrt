@@ -1,52 +1,31 @@
-import { defineTypes, Schema } from '@colyseus/schema';
-
-enum PlayerStatus {
-    Waiting,
-    Thinking,
-    Answered
-}
+import SocketIO from 'socket.io';
 
 export enum ChosenAnswer {
     A,
     B,
     C,
-    Answered,
-    None
+    Answered
 }
 
-export class Player extends Schema {
-    nickname: string = '';
-    playerStatus = PlayerStatus.Waiting;
-    answer: ChosenAnswer = ChosenAnswer.None;
-    hiddenAnswer: ChosenAnswer = ChosenAnswer.None;
-    lives: number = 3;
-
-    super(nickname: string) {
-        this.nickname = nickname;
-    }
-
-    setAnswer(answer: ChosenAnswer) {
-        this.hiddenAnswer = answer;
-        this.answer = ChosenAnswer.Answered;
-    }
-
-    resetAnswer() {
-        this.answer = ChosenAnswer.None;
-        this.hiddenAnswer = ChosenAnswer.None;
-    }
-
-    displayAnswer() {
-        this.answer = this.hiddenAnswer;
-    }
-
-    removeALife() {
-        this.lives -= 1;
-    }
+export interface Player {
+    socket: SocketIO.Socket;
+    nickname: string;
+    lives: number;
+    answer: ChosenAnswer | null;
+    hiddenAnswer: ChosenAnswer | null;
 }
 
-defineTypes(Player, {
-    nickname: "string",
-    playerStatus: "number",
-    answer: "number",
-    lives: "number"
+export const buildPlayer = (socket: SocketIO.Socket, nickname: string): Player => ({
+    socket,
+    nickname,
+    lives: 3,
+    answer: null,
+    hiddenAnswer: null
+});
+
+export const reshapePlayer = (player: Player) => ({
+    id: player.socket.id,
+    nickname: player.nickname,
+    lives: player.lives,
+    answer: player.answer
 });
