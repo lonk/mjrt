@@ -26,7 +26,8 @@ const buildRoomsManager = () => {
     };
 
     const checkRoomState = () => {
-        if (idlePlayers.length === 2) {
+        if (idlePlayers.length === 5) {
+            io.to(roomId).emit('gameState', { gameState: GameState.AboutToLock });
             gameLauncher = setTimeout(launchGame, 10000);
         }
 

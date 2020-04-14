@@ -6,6 +6,7 @@ import './Engine.css';
 // Todo: put it in root
 enum GameState {
     WaitingForPlayers,
+    AboutToLock,
     AboutToStart,
     WaitingForAnswers,
     AboutToSendNextQuestion,
@@ -105,12 +106,22 @@ export default function Engine() {
     );
 
     const waitingForPlayers = (
-        <div>En attente des joueurs (3 joueurs minimum)</div>
+        <div>En attente des joueurs (5 joueurs minimum)</div>
+    );
+
+    const aboutToLock = (
+        <div>Plus que 10 secondes avant le verrouillage de la salle !</div>
+    );
+
+    const aboutToStart = (
+        <div>Les joueurs sont au complet ! La partie démarre dans 10 secondes...</div>
     );
 
     return (
         <div className="engine">
             {gameState === GameState.WaitingForPlayers && waitingForPlayers}
+            {gameState === GameState.AboutToLock && aboutToLock}
+            {gameState === GameState.AboutToStart && aboutToStart}
             {currentQuestion && question}
             {currentAnswers.length > 0 && answer}
             <strong>Joueurs:</strong>

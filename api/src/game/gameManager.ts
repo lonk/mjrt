@@ -5,6 +5,10 @@ import { GameState } from '../game';
 import questions from '../../database/vox-questions.json';
 import answers from '../../database/vox-answers.json';
 
+const timeBeforeGameLaunch = 10000;
+const timeToAnswer = 15000;
+const timeToDisplayAnswers = 10000;
+
 interface BuilderPayload {
     roomId: string;
     idlePlayers: Player[];
@@ -27,7 +31,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
 
         io.to(roomId).emit('gameState', { gameState: GameState.AboutToStart });
 
-        setTimeout(() => generateQuestion(), 10000);
+        setTimeout(() => generateQuestion(), timeBeforeGameLaunch);
     };
 
     const generateQuestion = () => {
@@ -53,7 +57,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         });
         io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
 
-        setTimeout(() => endTurn(), 5000);
+        setTimeout(() => endTurn(), timeToAnswer);
     };
 
     const endTurn = () => {
@@ -106,7 +110,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             return endGame();
         }
 
-        setTimeout(() => generateQuestion(), 5000);
+        setTimeout(() => generateQuestion(), timeToDisplayAnswers);
     };
 
     const endGame = () => {
