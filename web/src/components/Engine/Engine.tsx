@@ -9,14 +9,8 @@ enum GameState {
     AboutToLock,
     AboutToStart,
     WaitingForAnswers,
-    AboutToSendNextQuestion,
+    DisplayScores,
     Finished
-}
-
-export enum PlayerStatus {
-    Waiting,
-    Thinking,
-    Answered
 }
 
 export enum ChosenAnswer {
@@ -114,20 +108,31 @@ export default function Engine() {
     );
 
     const aboutToStart = (
-        <div>Les joueurs sont au complet ! La partie démarre dans 10 secondes...</div>
+        <div>
+            Les joueurs sont au complet ! La partie démarre dans 10 secondes...
+        </div>
     );
+
+    const finished = <div>Partie terminée.</div>;
 
     return (
         <div className="engine">
             {gameState === GameState.WaitingForPlayers && waitingForPlayers}
             {gameState === GameState.AboutToLock && aboutToLock}
             {gameState === GameState.AboutToStart && aboutToStart}
-            {currentQuestion && question}
-            {currentAnswers.length > 0 && answer}
+            {gameState === GameState.Finished && finished}
+            {(gameState === GameState.DisplayScores ||
+                gameState === GameState.WaitingForAnswers) &&
+                currentQuestion &&
+                question}
+            {(gameState === GameState.DisplayScores ||
+                gameState === GameState.WaitingForAnswers) &&
+                currentAnswers.length > 0 &&
+                answer}
             <strong>Joueurs:</strong>
             <br />
             <div className="players">
-                {players.map((player) => (
+                {players.map(player => (
                     <PlayerBox key={player.id} player={player} />
                 ))}
             </div>
