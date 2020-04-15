@@ -12,13 +12,20 @@ const buildRoomsManager = () => {
     let launchDate: number | null = null;
 
     const joinIdleRoom = (socket: SocketIO.Socket) => {
-        socket.once('setNickname', (payload: any) => {
+        socket.on('setNickname', (payload: any) => {
             if (!roomId) {
                 roomId = generate();
             }
 
-            idlePlayers.push(buildPlayer(socket, payload.nickname));
-            socket.join(roomId);
+            const currentPlayer = idlePlayers.find(
+                player => player.socket.id === socket.id
+            );
+            if (!currentPlayer) {
+                idlePlayers.push(buildPlayer(socket, payload.nickname, roomId));
+                socket.join(roomId);
+            } else {
+                currentPlayer.nickname = payload.nickname;
+            }
 
             if (launchDate) {
                 socket.emit('gameState', {

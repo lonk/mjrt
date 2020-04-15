@@ -17,10 +17,16 @@ interface BuilderPayload {
 export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
     let players: Player[] = idlePlayers;
     let gameState: GameState = GameState.AboutToStart;
+    let nextState: number | null;
     let nextStepTimer: NodeJS.Timeout;
 
     const prepareGame = () => {
         for (const player of players) {
+            player.socket.on('getState', () => {
+                sendGameState();
+                sendPlayers();
+            });
+
             player.socket.on('vote', (message: any) => {
                 if (
                     player.lives === -1 ||
@@ -49,15 +55,20 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             });
         }
 
-        io.to(roomId).emit('gameState', {
-            gameState,
-            nextState: timeBeforeGameLaunch + Date.now()
-        });
+        nextState = timeBeforeGameLaunch + Date.now();
+        sendGameState();
 
         nextStepTimer = setTimeout(
             () => generateQuestion(),
             timeBeforeGameLaunch
         );
+    };
+
+    const sendGameState = () => {
+        io.to(roomId).emit('gameState', {
+            gameState,
+            nextState
+        });
     };
 
     const generateQuestion = () => {
@@ -74,10 +85,8 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             answers: generatedAnswers
         });
         gameState = GameState.WaitingForAnswers;
-        io.to(roomId).emit('gameState', {
-            gameState,
-            nextState: timeToAnswer + Date.now()
-        });
+        nextState = timeToAnswer + Date.now();
+        sendGameState();
         restorePlayers();
 
         nextStepTimer = setTimeout(() => endTurn(), timeToAnswer);
@@ -127,10 +136,8 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
         }
 
         gameState = GameState.DisplayScores;
-        io.to(roomId).emit('gameState', {
-            gameState,
-            nextState: timeToDisplayAnswers + Date.now()
-        });
+        nextState = timeToDisplayAnswers + Date.now();
+        sendGameState();
         sendPlayers();
 
         if (playersAlive <= 2) {
@@ -160,6 +167,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
     const endGame = () => {
         restorePlayers();
         gameState = GameState.Finished;
+        nextState = null;
         io.to(roomId).emit('gameState', { gameState });
     };
 

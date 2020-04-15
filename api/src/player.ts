@@ -13,14 +13,16 @@ export interface Player {
     lives: number;
     answer: ChosenAnswer | null;
     hiddenAnswer: ChosenAnswer | null;
+    roomId: string;
 }
 
-export const buildPlayer = (socket: SocketIO.Socket, nickname: string): Player => ({
+export const buildPlayer = (socket: SocketIO.Socket, nickname: string, roomId: string): Player => ({
     socket,
     nickname,
     lives: 2,
     answer: null,
-    hiddenAnswer: null
+    hiddenAnswer: null,
+    roomId
 });
 
 export const reshapePlayer = (player: Player) => ({

@@ -75,6 +75,8 @@ export default function Engine() {
             setPlayers(message.players);
         });
 
+        serverClient.emit('getState');
+
         return () => {
             serverClient.off('gameState');
             serverClient.off('currentQuestion');
