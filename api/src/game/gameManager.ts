@@ -17,6 +17,7 @@ interface BuilderPayload {
 export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
     let players: Player[] = idlePlayers;
     let gameState: GameState = GameState.AboutToStart;
+    let nextStepTimer: NodeJS.Timeout;
 
     const prepareGame = () => {
         for (const player of players) {
@@ -30,9 +31,21 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
                 player.hiddenAnswer = message.vote;
                 player.answer = ChosenAnswer.Answered;
 
-                io.to(roomId).emit('players', {
-                    players: players.map(reshapePlayer)
-                });
+                sendPlayers();
+
+                const unvotedPlayers = players.reduce(
+                    (acc, player) =>
+                        player.answer === ChosenAnswer.Answered ||
+                        player.lives === -1
+                            ? acc - 1
+                            : acc,
+                    players.length
+                );
+
+                if (unvotedPlayers === 0) {
+                    clearTimeout(nextStepTimer);
+                    endTurn();
+                }
             });
         }
 
@@ -41,15 +54,13 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             nextState: timeBeforeGameLaunch + Date.now()
         });
 
-        setTimeout(() => generateQuestion(), timeBeforeGameLaunch);
+        nextStepTimer = setTimeout(
+            () => generateQuestion(),
+            timeBeforeGameLaunch
+        );
     };
 
     const generateQuestion = () => {
-        for (const player of players) {
-            player.answer = null;
-            player.hiddenAnswer = null;
-        }
-
         const question =
             questions[Math.floor(Math.random() * questions.length)];
         const generatedAnswers = [
@@ -67,9 +78,9 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             gameState,
             nextState: timeToAnswer + Date.now()
         });
-        io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
+        restorePlayers();
 
-        setTimeout(() => endTurn(), timeToAnswer);
+        nextStepTimer = setTimeout(() => endTurn(), timeToAnswer);
     };
 
     const endTurn = () => {
@@ -120,16 +131,34 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
             gameState,
             nextState: timeToDisplayAnswers + Date.now()
         });
-        io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
+        sendPlayers();
 
         if (playersAlive <= 2) {
-            return setTimeout(() => endGame(), timeToDisplayAnswers);
+            nextStepTimer = setTimeout(() => endGame(), timeToDisplayAnswers);
+            return;
         }
 
-        setTimeout(() => generateQuestion(), timeToDisplayAnswers);
+        nextStepTimer = setTimeout(
+            () => generateQuestion(),
+            timeToDisplayAnswers
+        );
+    };
+
+    const restorePlayers = () => {
+        for (const player of players) {
+            player.answer = null;
+            player.hiddenAnswer = null;
+        }
+
+        sendPlayers();
+    };
+
+    const sendPlayers = () => {
+        io.to(roomId).emit('players', { players: players.map(reshapePlayer) });
     };
 
     const endGame = () => {
+        restorePlayers();
         gameState = GameState.Finished;
         io.to(roomId).emit('gameState', { gameState });
     };
