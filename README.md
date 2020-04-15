@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/lonk/mjrt/master/web/public/logo.png" alt="Mjrt logo" width="300" />
+</p>
+
 Ce projet est une recréation avec des technologies actuelles de Majority, de la Motion Twin.
 La dernière version officielle est en ligne sur https://mjrt.net/
 
