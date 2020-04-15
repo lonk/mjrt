@@ -29,7 +29,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
 
             player.socket.on('vote', (message: any) => {
                 if (
-                    player.lives === -1 ||
+                    player.lives === 0 ||
                     gameState !== GameState.WaitingForAnswers
                 )
                     return;
@@ -42,7 +42,7 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
                 const unvotedPlayers = players.reduce(
                     (acc, player) =>
                         player.answer === ChosenAnswer.Answered ||
-                        player.lives === -1
+                        player.lives === 0
                             ? acc - 1
                             : acc,
                     players.length
@@ -127,10 +127,10 @@ export const buildGameRoom = ({ roomId, idlePlayers }: BuilderPayload) => {
                 player.answer === null ||
                 winningAnswers.indexOf(player.answer) === -1
             ) {
-                player.lives = Math.max(player.lives - 1, -1);
+                player.lives = Math.max(player.lives - 1, 0);
             }
 
-            if (player.lives > -1) {
+            if (player.lives > 0) {
                 playersAlive += 1;
             }
         }

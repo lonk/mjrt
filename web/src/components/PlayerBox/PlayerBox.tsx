@@ -18,7 +18,7 @@ export default function PlayerBox (props: Props) {
         classNames = 'player b';
     } else if (props.player.answer === ChosenAnswer.C) {
         classNames = 'player c';
-    } else if (props.player.lives === -1) {
+    } else if (props.player.lives === 0) {
         classNames = 'player dead';
     }
 
