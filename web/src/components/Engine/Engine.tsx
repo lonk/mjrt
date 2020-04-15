@@ -3,6 +3,7 @@ import { serverClient } from '../../server';
 import PlayerBox from '../PlayerBox/PlayerBox';
 import Top from '../Top/Top';
 import Answer from '../Answer/Answer';
+import Notify from '../Notify/Notify';
 
 import './Engine.css';
 
@@ -163,6 +164,7 @@ export default function Engine() {
                     ))}
                 </div>
             </div>
+            <Notify notify={gameState === GameState.AboutToStart} />
         </div>
     );
 }

@@ -20,6 +20,6 @@
     "jsx": "react"
   },
   "include": [
-    "src", "shims/react-app-env.d.ts"
+    "src", "shims"
   ]
 }
