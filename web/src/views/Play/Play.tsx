@@ -6,6 +6,17 @@ import Engine from '../../components/Engine/Engine';
 export default function Play() {
     const history = useHistory();
     const [nickname] = useState(localStorage.getItem('nickname'));
+    const [socketLost, setSocketLost] = useState(false);
+
+    const checkSocketState = () => {
+        if (serverClient.disconnected) {
+            setSocketLost(true);
+            return;
+        }
+
+        serverClient.emit('setNickname', { nickname });
+        setSocketLost(false);
+    };
 
     useEffect(() => {
         if (!nickname) {
@@ -13,10 +24,20 @@ export default function Play() {
             return;
         }
 
-        serverClient.emit('setNickname', { nickname })
+        checkSocketState();
     }, []);
 
-    const success = <Engine />;
+    serverClient.on('connect', checkSocketState);
+    serverClient.on('disconnect', checkSocketState);
 
-    return success;
+    if (socketLost) {
+        return (
+            <div>
+                La connection au serveur a été perdue. Tentative de reconnexion
+                en cours...
+            </div>
+        );
+    }
+
+    return <Engine />;
 }

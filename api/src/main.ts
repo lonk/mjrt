@@ -8,9 +8,7 @@ const server = http.createServer(app);
 export const io = SocketIO(server);
 
 io.on('connection', (socket: SocketIO.Socket) => {
-    socket.on('setNickname', (payload: any) => {
-        roomsManager.joinIdleRoom(socket, payload.nickname);
-    });
+    roomsManager.joinIdleRoom(socket);
 });
 
 app.use('/', express.static('../../web/build'));

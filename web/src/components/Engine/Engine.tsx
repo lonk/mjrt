@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { serverClient } from '../../server';
 import PlayerBox from '../PlayerBox/PlayerBox';
 import Top from '../Top/Top';
@@ -51,25 +51,33 @@ export default function Engine() {
     const [players, setPlayers] = useState<Player[]>([]);
     const [countdown, setCountdown] = useState<number | undefined>();
 
-    serverClient.on(
-        'gameState',
-        ({ gameState, nextState }: GameStateMessage) => {
-            setGameState(gameState);
-            setCountdown(nextState);
-        }
-    );
+    useEffect(() => {
+        serverClient.on(
+            'gameState',
+            ({ gameState, nextState }: GameStateMessage) => {
+                setGameState(gameState);
+                setCountdown(nextState);
+            }
+        );
 
-    serverClient.on(
-        'currentQuestion',
-        ({ question, answers }: CurrentQuestionMessage) => {
-            setCurrentQuestion(question);
-            setCurrentAnswers(answers);
-        }
-    );
+        serverClient.on(
+            'currentQuestion',
+            ({ question, answers }: CurrentQuestionMessage) => {
+                setCurrentQuestion(question);
+                setCurrentAnswers(answers);
+            }
+        );
 
-    serverClient.on('players', (message: PlayersMessage) => {
-        setPlayers(message.players);
-    });
+        serverClient.on('players', (message: PlayersMessage) => {
+            setPlayers(message.players);
+        });
+
+        return () => {
+            serverClient.off('gameState');
+            serverClient.off('currentQuestion');
+            serverClient.off('players');
+        };
+    }, []);
 
     const voteAnswer = (vote: ChosenAnswer) => {
         serverClient.emit('vote', { vote });

@@ -1,17 +1,32 @@
 import React, { useState, FormEvent } from 'react';
 import { useHistory } from 'react-router-dom';
+import { serverClient } from '../../server';
 import './Login.css';
 
 export default function Login() {
     const [nickname, setNickname] = useState('');
+    const [socketLost, setSocketLost] = useState(false);
     const history = useHistory();
 
     const submitLogin = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         localStorage.setItem('nickname', nickname);
 
+        if (serverClient.disconnected) {
+            setSocketLost(true);
+            return;
+        }
+
+        setSocketLost(false);
+
         history.push('/play');
     };
+
+    const displaySocketLost = (
+        <div className="login-lost">
+            Le serveur est injoignable, veuillez ré-essayer plus tard.
+        </div>
+    );
 
     return (
         <div className="login">
@@ -20,10 +35,12 @@ export default function Login() {
             </div>
             <div className="login-content">
                 <div className="login-card">
-                Une question, trois réponses.<br />
-                Choisissez comme la majorité pour rester en vie.<br />
-                Combien de tours survivrez-vous ?
-
+                    {socketLost && displaySocketLost}
+                    Une question, trois réponses.
+                    <br />
+                    Choisissez comme la majorité pour rester en vie.
+                    <br />
+                    Combien de tours survivrez-vous ?
                     <form onSubmit={submitLogin} className="login-loginForm">
                         <input
                             type="text"
@@ -36,9 +53,14 @@ export default function Login() {
                             onChange={e => setNickname(e.target.value)}
                             title="Veuillez utiliser au minimum 3 caractères alphanumériques"
                         />
-                        <input type="submit" value="JOUER" className="login-submit" />
+                        <input
+                            type="submit"
+                            value="JOUER"
+                            className="login-submit"
+                        />
                     </form>
-                    La partie se lance dix secondes après l'arrivée du cinquième joueur.
+                    La partie se lance dix secondes après l'arrivée du cinquième
+                    joueur.
                 </div>
             </div>
         </div>

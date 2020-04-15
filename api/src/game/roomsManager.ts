@@ -11,25 +11,32 @@ const buildRoomsManager = () => {
     let gameLauncher: NodeJS.Timeout;
     let launchDate: number | null = null;
 
-    const joinIdleRoom = (socket: SocketIO.Socket, nickname: string) => {
-        if (!roomId) {
-            roomId = generate();
-        }
+    const joinIdleRoom = (socket: SocketIO.Socket) => {
+        socket.once('setNickname', (payload: any) => {
+            if (!roomId) {
+                roomId = generate();
+            }
 
-        idlePlayers.push(buildPlayer(socket, nickname));
-        socket.join(roomId);
+            idlePlayers.push(buildPlayer(socket, payload.nickname));
+            socket.join(roomId);
 
-        if (launchDate) {
-            socket.emit('gameState', { gameState: GameState.AboutToLock, nextState: launchDate })
-        } else {
-            socket.emit('gameState', { gameState: GameState.WaitingForPlayers });
-        }
+            if (launchDate) {
+                socket.emit('gameState', {
+                    gameState: GameState.AboutToLock,
+                    nextState: launchDate
+                });
+            } else {
+                socket.emit('gameState', {
+                    gameState: GameState.WaitingForPlayers
+                });
+            }
 
-        io.to(roomId).emit('players', {
-            players: idlePlayers.map(reshapePlayer)
+            io.to(roomId).emit('players', {
+                players: idlePlayers.map(reshapePlayer)
+            });
+
+            checkRoomState();
         });
-
-        checkRoomState();
     };
 
     const checkRoomState = () => {

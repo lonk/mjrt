@@ -25,12 +25,11 @@
     padding: 15px;
 }
 
-.login-list {
-    list-style: decimal;
-    text-align: left;
-    width: 220px;
-    margin-left: auto;
-    margin-right: auto;
+.login-lost {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #FB4F4F;
+    color: #222;
 }
 
 .login-loginForm {
