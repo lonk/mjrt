@@ -25,7 +25,7 @@ export default function PlayerBox (props: Props) {
     const lives: JSX.Element[] = [];
 
     for (let i = 0; i < props.player.lives; i++) {
-        lives.push(<span>&#10084;  </span>);
+        lives.push(<span key={`${props.player.id}_${i}`}>&#10084;  </span>);
     }
 
     return <div className={ classNames }>

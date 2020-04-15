@@ -29,8 +29,8 @@ export default function Login() {
                             type="text"
                             className="login-nickname"
                             name="nickname"
-                            placeholder="Pseudo (3 caractères min.)"
-                            pattern="\w{3,}"
+                            placeholder="Pseudo (2-12 caractères )"
+                            pattern="\w{2,12}"
                             required
                             value={nickname}
                             onChange={e => setNickname(e.target.value)}

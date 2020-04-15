@@ -11,8 +11,14 @@
     background: #222;
 }
 
+@media screen and (max-width: 360px) {
+    .players {
+        padding: 5px 5px;
+    }
+}
+
 .players-container {
-    max-width: 850px;
+    max-width: 860px;
     margin: auto;
 }
 
