@@ -6,7 +6,7 @@ import questions from '../../database/vox-questions.json';
 import answers from '../../database/vox-answers.json';
 
 const timeBeforeGameLaunch = 5000;
-const timeToAnswer = 10000;
+const timeToAnswer = 30000;
 const timeToDisplayAnswers = 5000;
 
 interface BuilderPayload {
