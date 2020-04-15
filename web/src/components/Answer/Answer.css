@@ -1,11 +1,25 @@
 .answer {
     display: flex;
-    border: 2px solid #222;
+    border: 1px solid #222;
     min-width: 150px;
+    max-height: 40px;
     padding: 10px;
     margin: 5px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.answer:focus {
+    outline: none;
+}
+
+.answer[disabled] {
+    cursor: auto;
+    color: black;
+}
+
+.answer.selected {
+    border: 2px solid #222;
 }
 
 .answer-letter {

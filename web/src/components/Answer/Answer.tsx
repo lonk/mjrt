@@ -17,6 +17,10 @@ export default function Answer(props: any) {
             classNames = 'answer';
     }
 
+    if (props.selected) {
+        classNames += ' selected';
+    }
+
     return (
         <button
             className={classNames}

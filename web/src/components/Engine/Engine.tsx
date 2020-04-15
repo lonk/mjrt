@@ -48,6 +48,7 @@ export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
     const [currentQuestion, setCurrentQuestion] = useState<string>('');
     const [currentAnswers, setCurrentAnswers] = useState<string[]>([]);
+    const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
     const [players, setPlayers] = useState<Player[]>([]);
     const [countdown, setCountdown] = useState<number | undefined>();
 
@@ -63,6 +64,7 @@ export default function Engine() {
         serverClient.on(
             'currentQuestion',
             ({ question, answers }: CurrentQuestionMessage) => {
+                setChosenAnswer(null);
                 setCurrentQuestion(question);
                 setCurrentAnswers(answers);
             }
@@ -80,7 +82,10 @@ export default function Engine() {
     }, []);
 
     const voteAnswer = (vote: ChosenAnswer) => {
-        serverClient.emit('vote', { vote });
+        if (gameState === GameState.WaitingForAnswers) {
+            setChosenAnswer(vote);
+            serverClient.emit('vote', { vote });
+        }
     };
 
     const question = <div className="engine-question">{currentQuestion}</div>;
@@ -94,6 +99,8 @@ export default function Engine() {
                     players.filter(player => player.answer === ChosenAnswer.A)
                         .length
                 }
+                selected={chosenAnswer === ChosenAnswer.A}
+                disabled={gameState !== GameState.WaitingForAnswers}
                 onClick={() => voteAnswer(ChosenAnswer.A)}
             />
             <Answer
@@ -104,6 +111,8 @@ export default function Engine() {
                     players.filter(player => player.answer === ChosenAnswer.B)
                         .length
                 }
+                selected={chosenAnswer === ChosenAnswer.B}
+                disabled={gameState !== GameState.WaitingForAnswers}
                 onClick={() => voteAnswer(ChosenAnswer.B)}
             />
             <Answer
@@ -114,6 +123,8 @@ export default function Engine() {
                     players.filter(player => player.answer === ChosenAnswer.C)
                         .length
                 }
+                selected={chosenAnswer === ChosenAnswer.C}
+                disabled={gameState !== GameState.WaitingForAnswers}
                 onClick={() => voteAnswer(ChosenAnswer.C)}
             />
         </div>
