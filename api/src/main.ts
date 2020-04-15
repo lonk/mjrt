@@ -13,4 +13,6 @@ io.on('connection', (socket: SocketIO.Socket) => {
     });
 });
 
+app.use('/', express.static('../../web/build'));
+
 server.listen(3001);

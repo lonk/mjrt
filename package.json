@@ -1,0 +1,21 @@
+ 
+{
+    "name": "mjrt",
+    "version": "0.1.0",
+    "description": "mjrt",
+    "author": "Lucas Soulier <lucas@buckless.com>",
+    "contributors": [
+      "Lucas Soulier <lucas@buckless.com>"
+    ],
+    "repository": "https://github.com/lonk/mjrt",
+    "homepage": "https://mjrt.net",
+    "private": true,
+    "workspaces": [
+      "api",
+      "web"
+    ],
+    "scripts": {
+      "deploy": "yarn workspace web build && yarn workspace api build",
+      "serve": "yarn workspace api serve"
+    }
+}
