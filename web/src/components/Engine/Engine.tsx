@@ -46,6 +46,10 @@ export type PlayersMessage = {
     players: Player[];
 };
 
+export type NextRoomMessage = {
+    roomId: string | null;
+}
+
 export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
     const [currentQuestion, setCurrentQuestion] = useState<string>('');
@@ -53,6 +57,7 @@ export default function Engine() {
     const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
     const [players, setPlayers] = useState<Player[]>([]);
     const [countdown, setCountdown] = useState<number | undefined>();
+    const [nextRoom, setNextRoom] = useState<string>();
 
     useEffect(() => {
         serverClient.on(
@@ -76,12 +81,22 @@ export default function Engine() {
             setPlayers(message.players);
         });
 
+        serverClient.on('nextRoom', ({ roomId }: NextRoomMessage) => {
+            if (roomId) {
+                setNextRoom(`/play/${roomId}`);
+                return;
+            }
+
+            setNextRoom('/play');
+        });
+
         serverClient.emit('getState');
 
         return () => {
             serverClient.off('gameState');
             serverClient.off('currentQuestion');
             serverClient.off('players');
+            serverClient.off('nextRoom');
         };
     }, []);
 
@@ -197,8 +212,8 @@ export default function Engine() {
     };
 
     const finished = (
-        <div>
-            Partie terminée, rechargez la page pour rejouer !<br />
+        <div className="engine-finished">
+            Partie terminée, cliquez <a href={nextRoom}>ici</a> pour rejouer !<br />
             {generateWinners()}
         </div>
     );

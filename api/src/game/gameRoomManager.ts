@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { generate } from 'shortid';
 import { Player, ChosenAnswer, reshapePlayer } from '../player';
 import { io } from '../main';
 import { GameState } from '../game';
@@ -11,7 +12,7 @@ const timeToAnswer = 30000;
 const timeToDisplayAnswers = 5000;
 
 // TODO: extract game logic in ../game.ts
-export const buildGameRoom = (roomId: string) => {
+export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     const playersById: Map<string, Player> = new Map();
     let gameState: GameState = GameState.WaitingForPlayers;
     let nextState: number | null = null;
@@ -21,7 +22,7 @@ export const buildGameRoom = (roomId: string) => {
     const eventEmitter = new EventEmitter();
 
     const isRoomLocked = () =>
-        !(GameState.WaitingForPlayers || GameState.AboutToLock);
+        !(gameState === GameState.WaitingForPlayers || gameState === GameState.AboutToLock);
 
     const attachListenersToPlayer = (newPlayer: Player) => {
         let player = newPlayer;
@@ -106,14 +107,14 @@ export const buildGameRoom = (roomId: string) => {
     const checkIfReadyToLauch = () => {
         const players = Array.from(playersById.values());
 
-        if (players.length === 5) {
+        if (players.length === 5 && gameState !== GameState.AboutToLock) {
             gameState = GameState.AboutToLock;
             nextState = Date.now() + 10000;
             sendGameState();
             nextStepTimer = setTimeout(launchGame, 10000);
         }
 
-        if (players.length === 50) {
+        if (players.length === 2) {
             launchGame();
         }
     };
@@ -245,6 +246,7 @@ export const buildGameRoom = (roomId: string) => {
 
     const endGame = () => {
         restorePlayers();
+        io.to(roomId).emit('nextRoom', { roomId: isPrivate ? generate(): null });
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();

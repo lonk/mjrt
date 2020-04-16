@@ -25,7 +25,8 @@ const buildRoomsManager = () => {
 
                 addPlayerToRoom(
                     roomToJoin,
-                    buildPlayer(socket, playerId, nickname)
+                    buildPlayer(socket, playerId, nickname),
+                    Boolean(roomToJoin !== currentPublicRoomId)
                 );
 
                 socket.emit('registered', { roomId: roomToJoin });
@@ -33,8 +34,8 @@ const buildRoomsManager = () => {
         );
     };
 
-    const createNewRoom = (roomId: string) => {
-        const room = buildGameRoom(roomId);
+    const createNewRoom = (roomId: string, isPrivate: boolean) => {
+        const room = buildGameRoom(roomId, isPrivate);
         roomsById.set(roomId, room);
 
         room.eventEmitter.on('lock', () => {
@@ -50,8 +51,8 @@ const buildRoomsManager = () => {
         return room;
     };
 
-    const addPlayerToRoom = (roomId: string, player: Player) => {
-        const room = roomsById.get(roomId) || createNewRoom(roomId);
+    const addPlayerToRoom = (roomId: string, player: Player, isPrivate: boolean) => {
+        const room = roomsById.get(roomId) || createNewRoom(roomId, isPrivate);
         room.handlePlayer(player);
     };
 

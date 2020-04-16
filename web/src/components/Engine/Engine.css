@@ -47,6 +47,10 @@
     height: 40px;
 }
 
+.engine-finished > a {
+    color: #222;
+}
+
 .engine-between {
     padding: 0 5px 5px 5px;
 }
