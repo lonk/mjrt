@@ -178,19 +178,21 @@ export default function Engine() {
         } else if (winners.length === 1) {
             return (
                 <span>
-                    Notre grand gagnant est <strong>{winners[0].nickname}</strong> ! Un
-                    grand bravo à lui !
+                    Notre grand gagnant est{' '}
+                    <strong>{winners[0].nickname}</strong> ! Un grand bravo à
+                    lui !
                 </span>
             );
         } else if (winners.length === 2) {
             return (
                 <span>
-                    On applaudit <strong>{winners[0].nickname}</strong> et
-                    <strong>{winners[1].nickname}</strong> pour cette partie exemplaire !
+                    On applaudit <strong>{winners[0].nickname}</strong> et{' '}
+                    <strong>{winners[1].nickname}</strong> pour cette partie
+                    exemplaire !
                 </span>
             );
         }
-        
+
         return <span></span>;
     };
 
