@@ -8,7 +8,7 @@ export default function Top(props: any) {
             <div className="top-content">
                 {props.children}
             </div>
-            { props.countdown !== undefined && <div className="countdown">
+            { props.countdown !== null && <div className="countdown">
                 <Countdown
                     date={props.countdown}
                     key={props.countdown}

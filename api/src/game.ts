@@ -1,3 +1,5 @@
+import { Player } from './player';
+
 export enum GameState {
     WaitingForPlayers,
     AboutToLock,
@@ -5,4 +7,8 @@ export enum GameState {
     WaitingForAnswers,
     DisplayScores,
     Finished
+}
+
+export interface GameRoom {
+    handlePlayer: (player: Player) => void;
 }

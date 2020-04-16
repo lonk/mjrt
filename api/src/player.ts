@@ -8,26 +8,33 @@ export enum ChosenAnswer {
 }
 
 export interface Player {
+    id: string;
     socket: SocketIO.Socket;
     nickname: string;
     lives: number;
     answer: ChosenAnswer | null;
     hiddenAnswer: ChosenAnswer | null;
-    roomId: string;
+    offline: boolean;
 }
 
-export const buildPlayer = (socket: SocketIO.Socket, nickname: string, roomId: string): Player => ({
+export const buildPlayer = (
+    socket: SocketIO.Socket,
+    id: string,
+    nickname: string
+): Player => ({
+    id,
     socket,
     nickname,
-    lives: 3,
+    lives: 1,
     answer: null,
     hiddenAnswer: null,
-    roomId
+    offline: false
 });
 
 export const reshapePlayer = (player: Player) => ({
-    id: player.socket.id,
+    id: player.id,
     nickname: player.nickname,
     lives: player.lives,
-    answer: player.answer
+    answer: player.answer,
+    offline: player.offline
 });

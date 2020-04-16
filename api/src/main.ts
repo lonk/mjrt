@@ -9,7 +9,7 @@ const server = http.createServer(app);
 export const io = SocketIO(server);
 
 io.on('connection', (socket: SocketIO.Socket) => {
-    roomsManager.joinIdleRoom(socket);
+    roomsManager.handleSocket(socket);
 });
 
 app.use('/', express.static('../../web/build'));

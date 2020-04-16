@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useHistory } from 'react-router-dom';
+import { generate } from 'shortid';
 import { serverClient } from '../../server';
 import './Login.css';
 
@@ -11,6 +12,9 @@ export default function Login() {
     const submitLogin = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         localStorage.setItem('nickname', nickname);
+        if (!localStorage.getItem('playerId')) {
+            localStorage.setItem('playerId', generate());
+        }
 
         if (serverClient.disconnected) {
             setSocketLost(true);
@@ -51,7 +55,7 @@ export default function Login() {
                             required
                             value={nickname}
                             onChange={e => setNickname(e.target.value)}
-                            title="Veuillez utiliser au minimum 3 caractères alphanumériques"
+                            title="Veuillez utiliser entre 2 et 12 caractères alphanumériques"
                         />
                         <input
                             type="submit"

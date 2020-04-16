@@ -92,10 +92,12 @@ export default function Engine() {
     };
 
     const isCurrentPlayerAlive = () => {
-        const currentPlayer = players.find(player => player.id === serverClient.id);
+        const currentPlayer = players.find(
+            player => player.id === localStorage.getItem('playerId')
+        );
 
         return Boolean(currentPlayer && currentPlayer.lives > 0);
-    }
+    };
 
     const question = <div className="engine-question">{currentQuestion}</div>;
     const answer = (
@@ -109,7 +111,10 @@ export default function Engine() {
                         .length
                 }
                 selected={chosenAnswer === ChosenAnswer.A}
-                disabled={gameState !== GameState.WaitingForAnswers || !isCurrentPlayerAlive()}
+                disabled={
+                    gameState !== GameState.WaitingForAnswers ||
+                    !isCurrentPlayerAlive()
+                }
                 onClick={() => voteAnswer(ChosenAnswer.A)}
             />
             <Answer
@@ -121,7 +126,10 @@ export default function Engine() {
                         .length
                 }
                 selected={chosenAnswer === ChosenAnswer.B}
-                disabled={gameState !== GameState.WaitingForAnswers || !isCurrentPlayerAlive()}
+                disabled={
+                    gameState !== GameState.WaitingForAnswers ||
+                    !isCurrentPlayerAlive()
+                }
                 onClick={() => voteAnswer(ChosenAnswer.B)}
             />
             <Answer
@@ -133,7 +141,10 @@ export default function Engine() {
                         .length
                 }
                 selected={chosenAnswer === ChosenAnswer.C}
-                disabled={gameState !== GameState.WaitingForAnswers || !isCurrentPlayerAlive()}
+                disabled={
+                    gameState !== GameState.WaitingForAnswers ||
+                    !isCurrentPlayerAlive()
+                }
                 onClick={() => voteAnswer(ChosenAnswer.C)}
             />
         </div>
