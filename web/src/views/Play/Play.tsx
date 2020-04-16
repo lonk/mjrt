@@ -32,7 +32,7 @@ export default function Play() {
 
         serverClient.on('registered', ({ roomId }: RegisteredPayload) => {
             setSocketState(SocketState.Connected);
-            if (id && roomId !== id) {
+            if (roomId !== id) {
                 history.replace(`/play/${roomId}`);
             }
         });

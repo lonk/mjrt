@@ -42,10 +42,7 @@ export const buildGameRoom = (roomId: string) => {
         player.socket.on('disconnect', () => {
             const playerToUpdate = playersById.get(player.id);
             if (playerToUpdate) {
-                playersById.set(player.id, {
-                    ...playerToUpdate,
-                    offline: true
-                });
+                playerToUpdate.offline = true;
             }
 
             sendPlayers();
@@ -62,11 +59,8 @@ export const buildGameRoom = (roomId: string) => {
             if (player.lives === 0 || gameState !== GameState.WaitingForAnswers)
                 return;
 
-            playersById.set(player.id, {
-                ...player,
-                hiddenAnswer: message.vote,
-                answer: ChosenAnswer.Answered
-            });
+            player.hiddenAnswer = message.vote;
+            player.answer = ChosenAnswer.Answered;
 
             sendPlayers();
 
@@ -157,18 +151,15 @@ export const buildGameRoom = (roomId: string) => {
         const players = Array.from(playersById.values());
 
         for (const player of players) {
-            playersById.set(player.id, {
-                ...player,
-                answer: player.hiddenAnswer
-            });
+            player.answer = player.hiddenAnswer;
 
-            if (player.hiddenAnswer == null) {
+            if (player.answer == null) {
                 continue;
             }
 
             const currentAnswerScore =
-                answersScores.get(player.hiddenAnswer) || 0;
-            answersScores.set(player.hiddenAnswer, currentAnswerScore + 1);
+                answersScores.get(player.answer) || 0;
+            answersScores.set(player.answer, currentAnswerScore + 1);
         }
 
         let max = 0;
@@ -188,20 +179,14 @@ export const buildGameRoom = (roomId: string) => {
 
         let playersAlive = 0;
         for (const player of players) {
-            let lives = player.lives;
             if (
-                player.hiddenAnswer === null ||
-                winningAnswers.indexOf(player.hiddenAnswer) === -1
+                player.answer === null ||
+                winningAnswers.indexOf(player.answer) === -1
             ) {
-                lives = Math.max(lives - 1, 0);
-
-                playersById.set(player.id, {
-                    ...player,
-                    lives
-                });
+                player.lives = Math.max(player.lives - 1, 0);
             }
 
-            if (lives > 0) {
+            if (player.lives > 0) {
                 playersAlive += 1;
             }
         }
@@ -226,11 +211,8 @@ export const buildGameRoom = (roomId: string) => {
         const players = Array.from(playersById.values());
 
         for (const player of players) {
-            playersById.set(player.id, {
-                ...player,
-                answer: null,
-                hiddenAnswer: null
-            });
+            player.answer = null;
+            player.hiddenAnswer = null;
         }
 
         sendPlayers();
