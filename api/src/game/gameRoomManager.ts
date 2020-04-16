@@ -16,6 +16,8 @@ export const buildGameRoom = (roomId: string) => {
     let gameState: GameState = GameState.WaitingForPlayers;
     let nextState: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
+    let currentQuestion: string;
+    let currentAnswers: string[];
     const eventEmitter = new EventEmitter();
 
     const isRoomLocked = () =>
@@ -23,7 +25,7 @@ export const buildGameRoom = (roomId: string) => {
 
     const attachListenersToPlayer = (player: Player) => {
         const oldPlayer = playersById.get(player.id);
-
+        console.log(oldPlayer);
         if (oldPlayer) {
             // Prevent disconnect listener to be called
             oldPlayer.socket.removeAllListeners();
@@ -38,10 +40,13 @@ export const buildGameRoom = (roomId: string) => {
         player.socket.join(roomId);
 
         player.socket.on('disconnect', () => {
-            playersById.set(player.id, {
-                ...player,
-                offline: true
-            });
+            const playerToUpdate = playersById.get(player.id);
+            if (playerToUpdate) {
+                playersById.set(player.id, {
+                    ...playerToUpdate,
+                    offline: true
+                });
+            }
 
             sendPlayers();
             checkIfRoomToDestroy();
@@ -50,6 +55,7 @@ export const buildGameRoom = (roomId: string) => {
         player.socket.on('getState', () => {
             sendGameState();
             sendPlayers();
+            sendCurrentQuestion();
         });
 
         player.socket.on('vote', (message: any) => {
@@ -116,6 +122,7 @@ export const buildGameRoom = (roomId: string) => {
     };
 
     const launchGame = () => {
+        clearTimeout(nextStepTimer);
         eventEmitter.emit('lock');
         gameState = GameState.AboutToStart;
         nextState = timeBeforeGameLaunch + Date.now();
@@ -128,20 +135,17 @@ export const buildGameRoom = (roomId: string) => {
     };
 
     const generateQuestion = () => {
-        const question =
+        currentQuestion =
             questions[Math.floor(Math.random() * questions.length)];
-        const generatedAnswers = [
+        currentAnswers = [
             answers[Math.floor(Math.random() * answers.length)],
             answers[Math.floor(Math.random() * answers.length)],
             answers[Math.floor(Math.random() * answers.length)]
         ];
 
-        io.to(roomId).emit('currentQuestion', {
-            question,
-            answers: generatedAnswers
-        });
         gameState = GameState.WaitingForAnswers;
         nextState = timeToAnswer + Date.now();
+        sendCurrentQuestion();
         sendGameState();
         restorePlayers();
 
@@ -236,6 +240,15 @@ export const buildGameRoom = (roomId: string) => {
         io.to(roomId).emit('players', {
             players: Array.from(playersById.values()).map(reshapePlayer)
         });
+    };
+
+    const sendCurrentQuestion = () => {
+        if (currentQuestion && currentAnswers) {
+            io.to(roomId).emit('currentQuestion', {
+                question: currentQuestion,
+                answers: currentAnswers
+            });
+        }
     };
 
     const endGame = () => {

@@ -25,7 +25,7 @@ export const buildPlayer = (
     id,
     socket,
     nickname,
-    lives: 3,
+    lives: 1,
     answer: null,
     hiddenAnswer: null,
     offline: false
