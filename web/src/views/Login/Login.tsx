@@ -29,6 +29,9 @@ export default function Login() {
         if (createPrivate) {
             history.push(`/play/${generate()}`);
             return;
+        } else if (id) {
+            history.push(`/play/${id}`);
+            return;
         }
 
         history.push('/play');

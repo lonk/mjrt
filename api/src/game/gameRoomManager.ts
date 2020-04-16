@@ -23,13 +23,23 @@ export const buildGameRoom = (roomId: string) => {
     const isRoomLocked = () =>
         !(GameState.WaitingForPlayers || GameState.AboutToLock);
 
-    const attachListenersToPlayer = (player: Player) => {
+    const attachListenersToPlayer = (newPlayer: Player) => {
+        let player = newPlayer;
         const oldPlayer = playersById.get(player.id);
 
-        if (oldPlayer && oldPlayer.socket.id !== player.socket.id) {
-            // Prevent disconnect listener to be called
-            oldPlayer.socket.removeAllListeners();
-            oldPlayer.socket.disconnect(true);
+        if (oldPlayer) {
+            if (oldPlayer.socket.id !== player.socket.id) {
+                // Prevent disconnect listener to be called
+                oldPlayer.socket.removeAllListeners();
+                oldPlayer.socket.disconnect(true);
+            }
+
+            player = {
+                ...oldPlayer,
+                nickname: player.nickname,
+                socket: player.socket,
+                offline: false
+            };
         }
 
         if (!oldPlayer && isRoomLocked()) {
