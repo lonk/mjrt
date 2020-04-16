@@ -1,12 +1,14 @@
 import React from 'react';
+import { FaHeart } from 'react-icons/fa';
+import { FiWifiOff } from 'react-icons/fi';
 import { Player, ChosenAnswer } from '../Engine/Engine';
 import './PlayerBox.css';
 
 interface Props {
-    player: Player
+    player: Player;
 }
 
-export default function PlayerBox (props: Props) {
+export default function PlayerBox(props: Props) {
     let classNames = 'player';
 
     // Todo: put it in root
@@ -25,11 +27,22 @@ export default function PlayerBox (props: Props) {
     const lives: JSX.Element[] = [];
 
     for (let i = 0; i < props.player.lives; i++) {
-        lives.push(<span key={`${props.player.id}_${i}`}>&#10084;  </span>);
+        lives.push(
+            <FaHeart key={`${props.player.id}_${i}`} className="live" />
+        );
     }
 
-    return <div className={ classNames }>
-        <div className="nickname">{ props.player.nickname }</div>
-        <div className="lives">{ lives }</div>
-    </div>
-};
+    return (
+        <div className={classNames}>
+            <div className="nickname">{props.player.nickname}</div>
+            <div className="icons">
+                {props.player.offline && (
+                    <div className="offline">
+                        <FiWifiOff />
+                    </div>
+                )}
+                <div className="lives">{lives}</div>
+            </div>
+        </div>
+    );
+}

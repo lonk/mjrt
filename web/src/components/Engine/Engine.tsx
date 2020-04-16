@@ -29,6 +29,7 @@ export type Player = {
     nickname: string;
     answer: ChosenAnswer | null;
     lives: number;
+    offline: boolean;
 };
 
 export type GameStateMessage = {
