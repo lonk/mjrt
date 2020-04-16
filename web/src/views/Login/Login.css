@@ -32,9 +32,30 @@
     color: #222;
 }
 
+.login-private {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #FBC93D;
+    color: #222;
+}
+
 .login-loginForm {
     text-align: center;
     margin: 15px 0;
+}
+
+.login-privateBox {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-privateBox > input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background: white;
 }
 
 .login-nickname {

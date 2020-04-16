@@ -33,13 +33,9 @@ export default function Play() {
         serverClient.on('registered', ({ roomId }: RegisteredPayload) => {
             setSocketState(SocketState.Connected);
             if (roomId !== id) {
-                history.push(`/play/${roomId}`);
+                history.replace(`/play/${roomId}`);
             }
         });
-
-        return () => {
-            serverClient.off('registered');
-        };
     };
 
     useEffect(() => {
@@ -58,6 +54,7 @@ export default function Play() {
         return () => {
             serverClient.off('connect', checkSocketState);
             serverClient.off('disconnect', checkSocketState);
+            serverClient.off('registered');
         };
     }, []);
 

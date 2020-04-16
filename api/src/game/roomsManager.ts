@@ -14,7 +14,7 @@ const buildRoomsManager = () => {
     let currentPublicRoomId: string = generate();
 
     const handleSocket = (socket: SocketIO.Socket) => {
-        socket.once(
+        socket.on(
             'register',
             ({ playerId, nickname, roomId }: RegistrationMessage) => {
                 if (!playerId || !/^\w{2,12}$/.test(nickname)) {

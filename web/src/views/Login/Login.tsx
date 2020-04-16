@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { generate } from 'shortid';
 import { serverClient } from '../../server';
 import './Login.css';
@@ -7,7 +7,10 @@ import './Login.css';
 export default function Login() {
     const [nickname, setNickname] = useState('');
     const [socketLost, setSocketLost] = useState(false);
+    const [createPrivate, setCreatePrivate] = useState(false);
+
     const history = useHistory();
+    const { id } = useParams();
 
     const submitLogin = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,12 +26,25 @@ export default function Login() {
 
         setSocketLost(false);
 
+        if (createPrivate) {
+            history.push(`/play/${generate()}`);
+            return;
+        }
+
         history.push('/play');
     };
 
     const displaySocketLost = (
         <div className="login-lost">
             Le serveur est injoignable, veuillez ré-essayer plus tard.
+        </div>
+    );
+
+    const privateRoom = (
+        <div className="login-private">
+            <strong>Attention</strong>
+            <br />
+            Vous allez rejoindre une partie privée !
         </div>
     );
 
@@ -40,12 +56,28 @@ export default function Login() {
             <div className="login-content">
                 <div className="login-card">
                     {socketLost && displaySocketLost}
+                    {Boolean(id) && !socketLost && privateRoom}
                     Une question, trois réponses.
                     <br />
                     Choisissez comme la majorité pour rester en vie.
                     <br />
                     Combien de tours survivrez-vous ?
                     <form onSubmit={submitLogin} className="login-loginForm">
+                        {!Boolean(id) && (
+                            <div className="login-privateBox">
+                                <input
+                                    type="checkbox"
+                                    id="private"
+                                    checked={createPrivate}
+                                    onChange={e =>
+                                        setCreatePrivate(!createPrivate)
+                                    }
+                                />
+                                <label htmlFor="private">
+                                    Créer une partie privée
+                                </label>
+                            </div>
+                        )}
                         <input
                             type="text"
                             className="login-nickname"

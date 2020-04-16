@@ -26,7 +26,7 @@ export const buildGameRoom = (roomId: string) => {
     const attachListenersToPlayer = (player: Player) => {
         const oldPlayer = playersById.get(player.id);
 
-        if (oldPlayer) {
+        if (oldPlayer && oldPlayer.socket.id !== player.socket.id) {
             // Prevent disconnect listener to be called
             oldPlayer.socket.removeAllListeners();
             oldPlayer.socket.disconnect(true);
