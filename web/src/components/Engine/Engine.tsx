@@ -152,16 +152,54 @@ export default function Engine() {
     );
 
     const waitingForPlayers = (
-        <span>En attente des joueurs (5 joueurs minimum)</span>
+        <div className="engine-between">
+            En attente de 5 joueurs.
+            <br /> Pas la peine de rester scotchés à votre écran: nous vous
+            enverrons une notification quand la partie sera sur le point de
+            commencer !
+        </div>
     );
 
-    const aboutToLock = <div>En attente des derniers joueurs.</div>;
+    const aboutToLock = (
+        <div className="engine-between">En attente des derniers joueurs.</div>
+    );
 
     const aboutToStart = (
-        <div>Les joueurs sont au complet ! La partie va pouvoir commencer.</div>
+        <div className="engine-between">
+            Les joueurs sont au complet ! La partie va pouvoir commencer.
+        </div>
     );
 
-    const finished = <div>Partie terminée.</div>;
+    const generateWinners = () => {
+        const winners = players.filter(player => player.lives > 0);
+
+        if (winners.length === 0) {
+            return <span>Il n'y a eu aucun gagnant.</span>;
+        } else if (winners.length === 1) {
+            return (
+                <span>
+                    Notre grand gagnant est <strong>{winners[0].nickname}</strong> ! Un
+                    grand bravo à lui !
+                </span>
+            );
+        } else if (winners.length === 2) {
+            return (
+                <span>
+                    On applaudit <strong>{winners[0].nickname}</strong> et
+                    <strong>{winners[1].nickname}</strong> pour cette partie exemplaire !
+                </span>
+            );
+        }
+        
+        return <span></span>;
+    };
+
+    const finished = (
+        <div>
+            Partie terminée, rechargez la page pour rejouer !<br />
+            {generateWinners()}
+        </div>
+    );
 
     return (
         <div className="engine">
