@@ -39,11 +39,15 @@ export default function Play() {
             return;
         }
 
+        serverClient.on('connect', checkSocketState);
+        serverClient.on('disconnect', checkSocketState);
         checkSocketState();
-    }, []);
 
-    serverClient.on('connect', checkSocketState);
-    serverClient.on('disconnect', checkSocketState);
+        return () => {
+            serverClient.off('connect', checkSocketState);
+            serverClient.off('disconnect', checkSocketState);
+        };
+    }, []);
 
     if (socketState !== SocketState.Connected) {
         return (
