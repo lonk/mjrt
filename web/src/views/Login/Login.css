@@ -71,3 +71,18 @@
     font-weight: 600;
 
 }
+
+.motion-twin {
+    color: white;
+    position: absolute;
+    margin-top: 10px;
+    font-size: 12px;
+    bottom: 10px;
+    width: 100%;
+    padding: 5px 0;
+    text-align: center;
+}
+
+.motion-twin > a {
+    color: white;
+}
