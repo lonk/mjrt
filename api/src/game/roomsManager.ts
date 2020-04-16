@@ -17,6 +17,10 @@ const buildRoomsManager = () => {
         socket.once(
             'register',
             ({ playerId, nickname, roomId }: RegistrationMessage) => {
+                if (!playerId || !/^\w{2,12}$/.test(nickname)) {
+                    socket.disconnect();
+                }
+
                 const roomToJoin = roomId || currentPublicRoomId;
 
                 addPlayerToRoom(

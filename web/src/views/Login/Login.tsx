@@ -55,7 +55,7 @@ export default function Login() {
                             required
                             value={nickname}
                             onChange={e => setNickname(e.target.value)}
-                            title="Veuillez utiliser au minimum 3 caractères alphanumériques"
+                            title="Veuillez utiliser entre 2 et 12 caractères alphanumériques"
                         />
                         <input
                             type="submit"
