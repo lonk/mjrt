@@ -2,7 +2,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #FBFAF8;
+    background: #fbfaf8;
 }
 
 .login-mjrt {
@@ -19,7 +19,7 @@
 }
 
 .login-card {
-    color: #FBFAF8;
+    color: #fbfaf8;
     max-width: 360px;
     margin: auto;
     padding: 15px;
@@ -28,7 +28,7 @@
 .login-lost {
     margin-bottom: 10px;
     padding: 10px;
-    background: #FB4F4F;
+    background: #fb4f4f;
     color: #222;
 }
 
@@ -44,7 +44,7 @@
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
-    border: 1px solid #FBFAF8;
+    border: 1px solid #fbfaf8;
     border-radius: 8px 0 0 8px;
 }
 
@@ -57,10 +57,10 @@
     padding: 0 16px;
     min-width: 65px;
 
-    background-color: #3A612C;
-    border-top: 1px solid #FBFAF8;
-    border-bottom: 1px solid #FBFAF8;
-    border-right: 1px solid #FBFAF8;
+    background-color: #3a612c;
+    border-top: 1px solid #fbfaf8;
+    border-bottom: 1px solid #fbfaf8;
+    border-right: 1px solid #fbfaf8;
     border-left: 0px;
     border-radius: 0 8px 8px 0;
     color: white;
@@ -69,7 +69,6 @@
     text-decoration: none;
     font-size: 1rem;
     font-weight: 600;
-
 }
 
 .motion-twin {

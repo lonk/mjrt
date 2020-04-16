@@ -11,7 +11,7 @@ export default function App() {
                 <Route exact path="/">
                     <Login />
                 </Route>
-                <Route path="/play">
+                <Route exact path="/play/:id?">
                     <Play />
                 </Route>
             </div>

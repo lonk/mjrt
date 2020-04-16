@@ -35,7 +35,7 @@ export default function Login() {
     return (
         <div className="login">
             <div className="login-mjrt">
-                <img src="./logo.png" alt="MJRT" width="250" />
+                <img src="/logo.png" alt="MJRT" width="250" />
             </div>
             <div className="login-content">
                 <div className="login-card">

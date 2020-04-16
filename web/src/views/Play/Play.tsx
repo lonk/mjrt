@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { serverClient } from '../../server';
 import Engine from '../../components/Engine/Engine';
 import './Play.css';
@@ -10,8 +10,13 @@ enum SocketState {
     Disconnected
 }
 
+type RegisteredPayload = {
+    roomId: string;
+};
+
 export default function Play() {
     const history = useHistory();
+    const { id } = useParams();
     const [socketState, setSocketState] = useState(SocketState.Connecting);
 
     const checkSocketState = () => {
@@ -23,11 +28,18 @@ export default function Play() {
         const nickname = localStorage.getItem('nickname');
         const playerId = localStorage.getItem('playerId');
 
-        serverClient.emit('register', { nickname, playerId });
+        serverClient.emit('register', { nickname, playerId, roomId: id });
 
-        serverClient.on('registered', () => {
+        serverClient.on('registered', ({ roomId }: RegisteredPayload) => {
             setSocketState(SocketState.Connected);
+            if (roomId !== id) {
+                history.push(`/play/${roomId}`);
+            }
         });
+
+        return () => {
+            serverClient.off('registered');
+        };
     };
 
     useEffect(() => {
@@ -53,7 +65,7 @@ export default function Play() {
         return (
             <div className="play">
                 <div className="play-mjrt">
-                    <img src="./logo.png" alt="MJRT" width="250" />
+                    <img src="/logo.png" alt="MJRT" width="250" />
                 </div>
                 <div className="play-content">
                     <div className="play-card">

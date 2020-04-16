@@ -7,7 +7,7 @@ export default function Notify(props: any) {
     const [registration, setRegistration] = useState<
         ServiceWorkerRegistration
     >();
-    const audio = new Audio('./notify.mp3');
+    const audio = new Audio('/notify.mp3');
 
     useEffect(() => {
         // Will force re-render due to the previous setNotificationShown === false
@@ -28,7 +28,7 @@ export default function Notify(props: any) {
 
     const registerSw = async () => {
         const navigatorRegistration = await navigator.serviceWorker.register(
-            'sw.js'
+            '/sw.js'
         );
         setRegistration(navigatorRegistration);
     };
