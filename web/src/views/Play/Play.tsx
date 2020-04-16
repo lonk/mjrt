@@ -32,7 +32,7 @@ export default function Play() {
 
         serverClient.on('registered', ({ roomId }: RegisteredPayload) => {
             setSocketState(SocketState.Connected);
-            if (roomId !== id) {
+            if (id && roomId !== id) {
                 history.replace(`/play/${roomId}`);
             }
         });
@@ -43,7 +43,8 @@ export default function Play() {
         const playerId = localStorage.getItem('playerId');
 
         if (!nickname || !playerId) {
-            history.push('/');
+            if (id) history.push(`/login/${id}`);
+            else history.push('/login');
             return;
         }
 
