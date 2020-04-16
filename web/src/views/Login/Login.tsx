@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useHistory } from 'react-router-dom';
+import { generate } from 'shortid';
 import { serverClient } from '../../server';
 import './Login.css';
 
@@ -11,6 +12,9 @@ export default function Login() {
     const submitLogin = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         localStorage.setItem('nickname', nickname);
+        if (!localStorage.getItem('playerId')) {
+            localStorage.setItem('playerId', generate());
+        }
 
         if (serverClient.disconnected) {
             setSocketLost(true);

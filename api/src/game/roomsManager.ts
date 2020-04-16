@@ -23,6 +23,8 @@ const buildRoomsManager = () => {
                     roomToJoin,
                     buildPlayer(socket, playerId, nickname)
                 );
+
+                socket.emit('registered');
             }
         );
     };
