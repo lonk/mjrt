@@ -114,7 +114,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
             nextStepTimer = setTimeout(launchGame, 10000);
         }
 
-        if (players.length === 5) {
+        if (players.length === 50) {
             launchGame();
         }
     };
