@@ -15,6 +15,7 @@ export interface Player {
     answer: ChosenAnswer | null;
     hiddenAnswer: ChosenAnswer | null;
     offline: boolean;
+    isRoomMaster: boolean;
 }
 
 export const buildPlayer = (
@@ -28,7 +29,8 @@ export const buildPlayer = (
     lives: 3,
     answer: null,
     hiddenAnswer: null,
-    offline: false
+    offline: false,
+    isRoomMaster: false
 });
 
 export const reshapePlayer = (player: Player) => ({
@@ -36,5 +38,6 @@ export const reshapePlayer = (player: Player) => ({
     nickname: player.nickname,
     lives: player.lives,
     answer: player.answer,
-    offline: player.offline
+    offline: player.offline,
+    isRoomMaster: player.isRoomMaster
 });

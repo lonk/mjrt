@@ -60,6 +60,18 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
         player.socket.join(roomId);
 
+        if (isPrivate && Array.from(playersById.keys()).length === 0) {
+            player.isRoomMaster = true;
+            player.socket.on('startGame', () => {
+                if (
+                    gameState === GameState.WaitingForPlayers &&
+                    Array.from(playersById.keys()).length > 2
+                ) {
+                    launchGame();
+                }
+            });
+        }
+
         player.socket.on('disconnect', () => {
             if (gameState === GameState.WaitingForPlayers) {
                 playersById.delete(player.id);
@@ -118,7 +130,11 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     const checkIfReadyToLauch = () => {
         const players = Array.from(playersById.values());
 
-        if (players.length === 5 && gameState !== GameState.AboutToLock) {
+        if (
+            players.length === 5 &&
+            gameState === GameState.WaitingForPlayers &&
+            !isPrivate
+        ) {
             gameState = GameState.AboutToLock;
             nextState = Date.now() + timeBeforeLock;
             sendGameState();
@@ -279,11 +295,13 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
     return {
         handlePlayer,
+        roomId,
         gameState,
         nextState,
         playersById,
         eventEmitter,
         currentQuestion,
-        currentAnswers
+        currentAnswers,
+        isPrivate
     };
 };
