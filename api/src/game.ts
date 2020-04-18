@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { Player } from './player';
 
 export enum GameState {
@@ -11,4 +12,10 @@ export enum GameState {
 
 export interface GameRoom {
     handlePlayer: (player: Player) => void;
+    gameState: GameState;
+    nextState: number | null;
+    playersById: Map<string, Player>;
+    eventEmitter: EventEmitter;
+    currentQuestion: string | null;
+    currentAnswers: string[];
 }
