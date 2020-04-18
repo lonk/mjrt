@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { roomsManager } from '../game/roomsManager';
 
 export const monitor = (req: Request, res: Response) => {
-    const rooms = Array.from(roomsManager.roomsById.values()).map(room => ({
+    const rooms = Array.from(roomsManager.roomsById.entries()).map(([id, room]) => ({
+        id,
         gameState: room.gameState,
         nextState: room.nextState,
         currentQuestion: room.currentQuestion,

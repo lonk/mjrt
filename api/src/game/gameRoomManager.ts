@@ -54,9 +54,10 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         player.socket.join(roomId);
 
         player.socket.on('disconnect', () => {
-            const playerToUpdate = playersById.get(player.id);
-            if (playerToUpdate) {
-                playerToUpdate.offline = true;
+            if (gameState === GameState.WaitingForPlayers) {
+                playersById.delete(player.id);
+            } else {
+                player.offline = true;
             }
 
             sendPlayers();
@@ -262,7 +263,8 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
         if (
             players.filter(p => !p.offline).length === 0 &&
-            gameState === GameState.Finished
+            (gameState === GameState.Finished ||
+                gameState === GameState.WaitingForPlayers)
         ) {
             eventEmitter.emit('destroy');
         }
