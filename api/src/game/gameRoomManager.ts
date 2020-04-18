@@ -7,9 +7,16 @@ import { GameState } from '../game';
 import questions from '../../database/vox-questions.json';
 import answers from '../../database/vox-answers.json';
 
-const timeBeforeGameLaunch = 5000;
-const timeToAnswer = 30000;
-const timeToDisplayAnswers = 5000;
+const timeBeforeLock = parseInt(process.env.TIME_BEFORE_LOCK || '0', 10);
+const timeBeforeGameLaunch = parseInt(
+    process.env.TIME_BEFORE_LAUNCH || '0',
+    10
+);
+const timeToAnswer = parseInt(process.env.TIME_TO_ANSWER || '0', 10);
+const timeToDisplayAnswers = parseInt(
+    process.env.TIME_TO_DISPLAY_ANSWERS || '0',
+    10
+);
 
 // TODO: extract game logic in ../game.ts
 export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
@@ -113,9 +120,9 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
         if (players.length === 5 && gameState !== GameState.AboutToLock) {
             gameState = GameState.AboutToLock;
-            nextState = Date.now() + 10000;
+            nextState = Date.now() + timeBeforeLock;
             sendGameState();
-            nextStepTimer = setTimeout(launchGame, 10000);
+            nextStepTimer = setTimeout(launchGame, timeBeforeLock);
         }
 
         if (players.length === 50) {
