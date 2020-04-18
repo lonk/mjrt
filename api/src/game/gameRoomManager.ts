@@ -7,19 +7,18 @@ import { GameState } from '../game';
 import questions from '../../database/vox-questions.json';
 import answers from '../../database/vox-answers.json';
 
-const timeBeforeLock = parseInt(process.env.TIME_BEFORE_LOCK || '0', 10);
-const timeBeforeGameLaunch = parseInt(
-    process.env.TIME_BEFORE_LAUNCH || '0',
-    10
-);
-const timeToAnswer = parseInt(process.env.TIME_TO_ANSWER || '0', 10);
-const timeToDisplayAnswers = parseInt(
-    process.env.TIME_TO_DISPLAY_ANSWERS || '0',
-    10
-);
-
 // TODO: extract game logic in ../game.ts
 export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
+    const timeBeforeLock = parseInt(process.env.TIME_BEFORE_LOCK || '0', 10);
+    const timeBeforeGameLaunch = parseInt(
+        process.env.TIME_BEFORE_LAUNCH || '0',
+        10
+    );
+    const timeToAnswer = parseInt(process.env.TIME_TO_ANSWER || '0', 10);
+    const timeToDisplayAnswers = parseInt(
+        process.env.TIME_TO_DISPLAY_ANSWERS || '0',
+        10
+    );
     const playersById: Map<string, Player> = new Map();
     let gameState: GameState = GameState.WaitingForPlayers;
     let nextState: number | null = null;
@@ -149,7 +148,8 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     const sendGameState = () => {
         io.to(roomId).emit('gameState', {
             gameState,
-            nextState
+            nextState,
+            isPrivate
         });
     };
 
@@ -296,12 +296,20 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     return {
         handlePlayer,
         roomId,
-        gameState,
-        nextState,
+        get gameState() {
+            return gameState;
+        },
+        get nextState() {
+            return nextState;
+        },
         playersById,
         eventEmitter,
-        currentQuestion,
-        currentAnswers,
+        get currentQuestion() {
+            return currentQuestion;
+        },
+        get currentAnswers() {
+            return currentAnswers;
+        },
         isPrivate
     };
 };

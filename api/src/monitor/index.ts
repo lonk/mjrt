@@ -14,7 +14,7 @@ export const monitor = (req: Request, res: Response) => {
             nickname: player.nickname,
             offline: player.offline,
             answer: player.answer,
-            hiddenAnswer: player.answer,
+            hiddenAnswer: player.hiddenAnswer,
             isRoomMaster: player.isRoomMaster
         }))
     }));

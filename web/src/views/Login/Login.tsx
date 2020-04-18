@@ -98,8 +98,18 @@ export default function Login() {
                             className="login-submit"
                         />
                     </form>
-                    La partie se lance dix secondes après l'arrivée du cinquième
-                    joueur.
+                    {!Boolean(id) && !createPrivate && (
+                        <span>
+                            La partie se lance dix secondes après l'arrivée du
+                            cinquième joueur.
+                        </span>
+                    )}
+                    {createPrivate && (
+                        <span>
+                            Vous décidez, à partir de 3 joueurs, de lancer ou
+                            non la partie.
+                        </span>
+                    )}
                 </div>
             </div>
             <div className="motion-twin">
