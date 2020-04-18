@@ -6,8 +6,6 @@
 
 .login-mjrt {
     text-align: center;
-    font-size: 40px;
-    font-weight: 600;
     padding: 10px 0px;
     background: #fafafa;
 }
@@ -35,7 +33,7 @@
 .login-private {
     margin-bottom: 10px;
     padding: 10px;
-    background: #fbc93d;
+    background: #CCA403;
     color: #181d27;
 }
 
