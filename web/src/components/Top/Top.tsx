@@ -12,7 +12,7 @@ export default function Top(props: any) {
                     <a href="https://twitter.com/MjrtNet">
                         <FaTwitter className="top-twitter" />
                     </a>
-                    <a href="https://discord.gg/zpCkC7">
+                    <a href="https://discord.gg/wqMxG4s">
                         <FaDiscord className="top-discord" />
                     </a>
                 </div>
