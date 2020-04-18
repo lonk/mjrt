@@ -60,12 +60,31 @@ export default function Login() {
                 <div className="login-card">
                     {socketLost && displaySocketLost}
                     {Boolean(id) && !socketLost && privateRoom}
-                    Une question, trois réponses.
+                    Une question, trois réponses insensées.
                     <br />
                     Choisissez comme la majorité pour rester en vie.
                     <br />
                     Combien de tours survivrez-vous ?
                     <form onSubmit={submitLogin} className="login-loginForm">
+                        <div className="login-oneLine">
+                            <input
+                                type="text"
+                                className="login-nickname"
+                                name="nickname"
+                                placeholder="Pseudo (2-12 caractères)"
+                                pattern="\w{2,12}"
+                                required
+                                value={nickname}
+                                onChange={e => setNickname(e.target.value)}
+                                title="Veuillez utiliser entre 2 et 12 caractères alphanumériques"
+                            />
+                            <input
+                                type="submit"
+                                value="JOUER !"
+                                className="login-submit"
+                            />
+                        </div>
+
                         {!Boolean(id) && (
                             <div className="login-privateBox">
                                 <input
@@ -81,43 +100,8 @@ export default function Login() {
                                 </label>
                             </div>
                         )}
-                        <input
-                            type="text"
-                            className="login-nickname"
-                            name="nickname"
-                            placeholder="Pseudo (2-12 caractères)"
-                            pattern="\w{2,12}"
-                            required
-                            value={nickname}
-                            onChange={e => setNickname(e.target.value)}
-                            title="Veuillez utiliser entre 2 et 12 caractères alphanumériques"
-                        />
-                        <input
-                            type="submit"
-                            value="JOUER"
-                            className="login-submit"
-                        />
                     </form>
-                    {!Boolean(id) && !createPrivate && (
-                        <span>
-                            La partie se lance dix secondes après l'arrivée du
-                            cinquième joueur.
-                        </span>
-                    )}
-                    {createPrivate && (
-                        <span>
-                            Vous décidez, à partir de 3 joueurs, de lancer ou
-                            non la partie.
-                        </span>
-                    )}
                 </div>
-            </div>
-            <div className="motion-twin">
-                Ce jeu est librement inspiré du génial{' '}
-                <a href="http://majority.muxxu.com">Majority</a> de la Motion
-                Twin !<br />
-                N'hésitez pas à contribuer sur{' '}
-                <a href="https://github.com/lonk/mjrt">GitHub</a> !
             </div>
         </div>
     );

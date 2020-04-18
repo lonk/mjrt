@@ -94,9 +94,8 @@ export default function Engine() {
     }, []);
 
     const getPlayer = () => {
-        return players.find(
-            player => player.sessionId === serverClient.id
-        );
+        console.log(players.find(player => player.sessionId === serverClient.id))
+        return players.find(player => player.sessionId === serverClient.id);
     };
 
     const voteAnswer = (vote: ChosenAnswer) => {
@@ -188,13 +187,14 @@ export default function Engine() {
                     pour lancer la partie.
                 </span>
             )}
-            {!isPrivate && <span>En attente de 5 joueurs.</span>}
+            {!isPrivate && (
+                <span>En attente de 5 joueurs pour lancer la partie.</span>
+            )}
             <br />
             {!getPlayer()?.isRoomMaster && (
                 <span>
-                    Pas la peine de rester scotchés à votre écran : nous vous
-                    enverrons une notification quand la partie sera sur le point
-                    de commencer !
+                    Nous vous enverrons une notification quand la partie sera
+                    sur le point de commencer !
                 </span>
             )}
         </div>
@@ -252,8 +252,11 @@ export default function Engine() {
             )}
             {isPrivate && getPlayer()?.isRoomMaster && (
                 <span>
-                    Partie terminée, cliquez <a href="#" onClick={e => resetRoom()}>ici</a> pour relancer
-                    une partie.
+                    Partie terminée, cliquez{' '}
+                    <a href="#" onClick={e => resetRoom()}>
+                        ici
+                    </a>{' '}
+                    pour relancer une partie.
                 </span>
             )}
             <br />
