@@ -60,15 +60,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         player.socket.join(roomId);
 
         if (isPrivate && Array.from(playersById.keys()).length === 0) {
-            player.isRoomMaster = true;
-            player.socket.on('startGame', () => {
-                if (
-                    gameState === GameState.WaitingForPlayers &&
-                    Array.from(playersById.keys()).length > 2
-                ) {
-                    launchGame();
-                }
-            });
+            setPlayerRoomMaster(player);
         }
 
         player.socket.on('disconnect', () => {
@@ -129,6 +121,41 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         if (!isRoomLocked()) checkIfReadyToLauch();
     };
 
+    const setPlayerRoomMaster = (player: Player) => {
+        player.isRoomMaster = true;
+        player.socket.on('startGame', () => {
+            if (
+                gameState === GameState.WaitingForPlayers &&
+                Array.from(playersById.keys()).length > 2
+            ) {
+                launchGame();
+            }
+        });
+
+        player.socket.on('resetRoom', () => {
+            if (gameState === GameState.Finished) {
+                resetRoom();
+            }
+        })
+    };
+
+    const resetRoom = () => {
+        const players = Array.from(playersById.values());
+
+        for (const player of players) {
+            player.lives = 3;
+        }
+
+        gameState = GameState.WaitingForPlayers;
+        nextState = null;
+        currentQuestion = null;
+        currentAnswers = [];
+
+        sendGameState();
+        sendPlayers();
+        sendCurrentQuestion();
+    };
+ 
     const checkIfReadyToLauch = () => {
         const players = Array.from(playersById.values());
 
@@ -275,9 +302,6 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
     const endGame = () => {
         restorePlayers();
-        io.to(roomId).emit('nextRoom', {
-            roomId: isPrivate ? generate() : null
-        });
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();
@@ -287,7 +311,11 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     const checkIfRoomToDestroy = () => {
         const players = Array.from(playersById.values());
 
-        if (players.length === 0) {
+        if (
+            players.filter(p => !p.offline).length === 0 &&
+            (gameState === GameState.Finished ||
+                gameState === GameState.WaitingForPlayers)
+        ) {
             eventEmitter.emit('destroy');
         }
     };

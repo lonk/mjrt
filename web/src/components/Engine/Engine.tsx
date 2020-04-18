@@ -48,10 +48,6 @@ export type PlayersMessage = {
     players: Player[];
 };
 
-export type NextRoomMessage = {
-    roomId: string | null;
-};
-
 export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
     const [isPrivate, setIsPrivate] = useState(false);
@@ -60,7 +56,6 @@ export default function Engine() {
     const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
     const [players, setPlayers] = useState<Player[]>([]);
     const [countdown, setCountdown] = useState<number | undefined>();
-    const [nextRoom, setNextRoom] = useState<string>();
 
     useEffect(() => {
         serverClient.on(
@@ -89,22 +84,12 @@ export default function Engine() {
             setPlayers(message.players);
         });
 
-        serverClient.on('nextRoom', ({ roomId }: NextRoomMessage) => {
-            if (roomId) {
-                setNextRoom(`/play/${roomId}`);
-                return;
-            }
-
-            setNextRoom('/play');
-        });
-
         serverClient.emit('getState');
 
         return () => {
             serverClient.off('gameState');
             serverClient.off('currentQuestion');
             serverClient.off('players');
-            serverClient.off('nextRoom');
         };
     }, []);
 
@@ -123,6 +108,10 @@ export default function Engine() {
 
     const startGame = () => {
         serverClient.emit('startGame');
+    };
+
+    const resetRoom = () => {
+        serverClient.emit('resetRoom');
     };
 
     const isCurrentPlayerAlive = () => {
@@ -194,8 +183,11 @@ export default function Engine() {
             )}
             {isPrivate && players.length > 2 && getPlayer()?.isRoomMaster && (
                 <span>
-                    Cliquez <a href="#" onClick={e => startGame()}>ici</a> pour
-                    lancer la partie.
+                    Cliquez{' '}
+                    <a href="#" onClick={e => startGame()}>
+                        ici
+                    </a>{' '}
+                    pour lancer la partie.
                 </span>
             )}
             {!isPrivate && <span>En attente de 5 joueurs.</span>}
@@ -248,7 +240,24 @@ export default function Engine() {
 
     const finished = (
         <div className="engine-finished">
-            Partie terminée, cliquez <a href={nextRoom}>ici</a> pour rejouer !
+            {!isPrivate && (
+                <span>
+                    Partie terminée, cliquez <a href="/play">ici</a> pour
+                    rejouer !
+                </span>
+            )}
+            {isPrivate && !getPlayer()?.isRoomMaster && (
+                <span>
+                    Partie terminée, le créateur de la partie peut maintenant en
+                    relancer une.
+                </span>
+            )}
+            {isPrivate && getPlayer()?.isRoomMaster && (
+                <span>
+                    Partie terminée, cliquez <a href="#" onClick={e => resetRoom()}>ici</a> pour relancer
+                    une partie.
+                </span>
+            )}
             <br />
             {generateWinners()}
         </div>

@@ -12,6 +12,7 @@ export const monitor = (req: Request, res: Response) => {
         players: Array.from(room.playersById.values()).map(player => ({
             id: player.id,
             nickname: player.nickname,
+            lives: player.lives,
             offline: player.offline,
             answer: player.answer,
             hiddenAnswer: player.hiddenAnswer,
