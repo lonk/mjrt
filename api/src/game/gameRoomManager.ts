@@ -72,7 +72,10 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         }
 
         player.socket.on('disconnect', () => {
-            if (gameState === GameState.WaitingForPlayers) {
+            if (
+                gameState === GameState.WaitingForPlayers ||
+                gameState === GameState.Finished
+            ) {
                 playersById.delete(player.id);
             } else {
                 player.offline = true;
@@ -284,11 +287,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     const checkIfRoomToDestroy = () => {
         const players = Array.from(playersById.values());
 
-        if (
-            players.filter(p => !p.offline).length === 0 &&
-            (gameState === GameState.Finished ||
-                gameState === GameState.WaitingForPlayers)
-        ) {
+        if (players.length === 0) {
             eventEmitter.emit('destroy');
         }
     };
