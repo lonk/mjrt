@@ -25,7 +25,7 @@ export enum ChosenAnswer {
 }
 
 export type Player = {
-    id: string;
+    sessionId: string;
     nickname: string;
     answer: ChosenAnswer | null;
     lives: number;
@@ -95,7 +95,7 @@ export default function Engine() {
 
     const getPlayer = () => {
         return players.find(
-            player => player.id === localStorage.getItem('playerId')
+            player => player.sessionId === serverClient.id
         );
     };
 
@@ -115,9 +115,7 @@ export default function Engine() {
     };
 
     const isCurrentPlayerAlive = () => {
-        const currentPlayer = players.find(
-            player => player.id === localStorage.getItem('playerId')
-        );
+        const currentPlayer = getPlayer();
 
         return Boolean(currentPlayer && currentPlayer.lives > 0);
     };
@@ -280,7 +278,7 @@ export default function Engine() {
             <div className="players">
                 <div className="players-container">
                     {players.map(player => (
-                        <PlayerBox key={player.id} player={player} />
+                        <PlayerBox key={player.sessionId} player={player} />
                     ))}
                 </div>
             </div>

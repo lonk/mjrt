@@ -28,7 +28,7 @@ export default function PlayerBox(props: Props) {
 
     for (let i = 0; i < props.player.lives; i++) {
         lives.push(
-            <FaHeart key={`${props.player.id}_${i}`} className="live" />
+            <FaHeart key={`${props.player.sessionId}_${i}`} className="live" />
         );
     }
 
@@ -36,7 +36,7 @@ export default function PlayerBox(props: Props) {
         <div className={classNames}>
             <div className="nickname">{props.player.nickname}</div>
             <div className="icons">
-                { props.player.isRoomMaster && (
+                {props.player.isRoomMaster && (
                     <div className="master">
                         <FaCrown />
                     </div>

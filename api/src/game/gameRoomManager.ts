@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { generate } from 'shortid';
 import { Player, ChosenAnswer, reshapePlayer } from '../player';
 import { io } from '../main';
 import { GameState } from '../game';

@@ -34,7 +34,7 @@ export const buildPlayer = (
 });
 
 export const reshapePlayer = (player: Player) => ({
-    id: player.id,
+    sessionId: player.socket.id,
     nickname: player.nickname,
     lives: player.lives,
     answer: player.answer,
