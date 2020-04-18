@@ -30,11 +30,13 @@ export type Player = {
     answer: ChosenAnswer | null;
     lives: number;
     offline: boolean;
+    isRoomMaster: boolean;
 };
 
 export type GameStateMessage = {
     gameState: GameState;
     nextState?: number;
+    isPrivate: boolean;
 };
 
 export type CurrentQuestionMessage = {
@@ -52,6 +54,7 @@ export type NextRoomMessage = {
 
 export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
+    const [isPrivate, setIsPrivate] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState<string>('');
     const [currentAnswers, setCurrentAnswers] = useState<string[]>([]);
     const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
@@ -62,9 +65,14 @@ export default function Engine() {
     useEffect(() => {
         serverClient.on(
             'gameState',
-            ({ gameState, nextState }: GameStateMessage) => {
+            ({
+                gameState,
+                nextState,
+                isPrivate: privateRoom
+            }: GameStateMessage) => {
                 setGameState(gameState);
                 setCountdown(nextState);
+                setIsPrivate(privateRoom);
             }
         );
 
@@ -100,11 +108,21 @@ export default function Engine() {
         };
     }, []);
 
+    const getPlayer = () => {
+        return players.find(
+            player => player.id === localStorage.getItem('playerId')
+        );
+    };
+
     const voteAnswer = (vote: ChosenAnswer) => {
         if (gameState === GameState.WaitingForAnswers) {
             setChosenAnswer(vote);
             serverClient.emit('vote', { vote });
         }
+    };
+
+    const startGame = () => {
+        serverClient.emit('startGame');
     };
 
     const isCurrentPlayerAlive = () => {
@@ -168,10 +186,27 @@ export default function Engine() {
 
     const waitingForPlayers = (
         <div className="engine-between">
-            En attente de 5 joueurs.
-            <br /> Pas la peine de rester scotchés à votre écran : nous vous
-            enverrons une notification quand la partie sera sur le point de
-            commencer !
+            {isPrivate && players.length <= 2 && (
+                <span>En attente de 3 joueurs pour lancer la partie.</span>
+            )}
+            {isPrivate && players.length > 2 && !getPlayer()?.isRoomMaster && (
+                <span>En attente du feu vert du créateur de la partie.</span>
+            )}
+            {isPrivate && players.length > 2 && getPlayer()?.isRoomMaster && (
+                <span>
+                    Cliquez <a href="#" onClick={e => startGame()}>ici</a> pour
+                    lancer la partie.
+                </span>
+            )}
+            {!isPrivate && <span>En attente de 5 joueurs.</span>}
+            <br />
+            {!getPlayer()?.isRoomMaster && (
+                <span>
+                    Pas la peine de rester scotchés à votre écran : nous vous
+                    enverrons une notification quand la partie sera sur le point
+                    de commencer !
+                </span>
+            )}
         </div>
     );
 

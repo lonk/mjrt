@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaCrown } from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
 import { Player, ChosenAnswer } from '../Engine/Engine';
 import './PlayerBox.css';
@@ -36,6 +36,11 @@ export default function PlayerBox(props: Props) {
         <div className={classNames}>
             <div className="nickname">{props.player.nickname}</div>
             <div className="icons">
+                { props.player.isRoomMaster && (
+                    <div className="master">
+                        <FaCrown />
+                    </div>
+                )}
                 {props.player.offline && (
                     <div className="offline">
                         <FiWifiOff />

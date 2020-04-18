@@ -34,9 +34,21 @@
 .lives {
     text-align: right;
     font-size: 12px;
+    margin-top: 2px;
     color: #FB4F4F;
-    height: 15px;
+    height: 14px;
     flex: 1;
+}
+
+.offline {
+    font-size: 15px;
+    height: 16px;
+}
+
+.master {
+    font-size: 15px;
+    height: 16px;
+    margin-right: 3px;
 }
 
 .live {

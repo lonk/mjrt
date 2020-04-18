@@ -54,3 +54,7 @@
 .engine-between {
     padding: 0 5px 5px 5px;
 }
+
+.engine-between > span > a {
+    color: #222;
+}
