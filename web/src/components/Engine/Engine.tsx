@@ -48,7 +48,7 @@ export type PlayersMessage = {
 
 export type NextRoomMessage = {
     roomId: string | null;
-}
+};
 
 export default function Engine() {
     const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
@@ -169,7 +169,7 @@ export default function Engine() {
     const waitingForPlayers = (
         <div className="engine-between">
             En attente de 5 joueurs.
-            <br /> Pas la peine de rester scotchés à votre écran: nous vous
+            <br /> Pas la peine de rester scotchés à votre écran : nous vous
             enverrons une notification quand la partie sera sur le point de
             commencer !
         </div>
@@ -213,7 +213,8 @@ export default function Engine() {
 
     const finished = (
         <div className="engine-finished">
-            Partie terminée, cliquez <a href={nextRoom}>ici</a> pour rejouer !<br />
+            Partie terminée, cliquez <a href={nextRoom}>ici</a> pour rejouer !
+            <br />
             {generateWinners()}
         </div>
     );

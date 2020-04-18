@@ -85,7 +85,7 @@ export default function Login() {
                             type="text"
                             className="login-nickname"
                             name="nickname"
-                            placeholder="Pseudo (2-12 caractères )"
+                            placeholder="Pseudo (2-12 caractères)"
                             pattern="\w{2,12}"
                             required
                             value={nickname}

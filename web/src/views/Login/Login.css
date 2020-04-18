@@ -94,13 +94,13 @@
 
 .motion-twin {
     color: white;
-    position: absolute;
-    margin-top: 10px;
+    padding-top: 10px;
     font-size: 12px;
-    bottom: 10px;
+    padding-bottom: 10px;
     width: 100%;
     padding: 5px 0;
     text-align: center;
+    background: #222;
 }
 
 .motion-twin > a {
