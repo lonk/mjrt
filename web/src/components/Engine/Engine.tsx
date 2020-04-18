@@ -194,7 +194,7 @@ export default function Engine() {
             )}
             {isPrivate && players.length > 2 && getPlayer()?.isRoomMaster && (
                 <span>
-                    Cliquez <button onClick={e => startGame()}>ici</button> pour
+                    Cliquez <a href="#" onClick={e => startGame()}>ici</a> pour
                     lancer la partie.
                 </span>
             )}
