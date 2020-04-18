@@ -2,25 +2,23 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #FBFAF8;
 }
 
 .play-mjrt {
     text-align: center;
-    font-size: 40px;
-    font-weight: 600;
-    margin: 10px 0px;
+    padding: 10px 0px;
+    background: #fafafa;
 }
 
 .play-content {
-    background: #222;
+    padding-top: 20px;
     text-align: center;
     flex: 1;
 }
 
 .play-card {
-    color: #FBFAF8;
-    max-width: 360px;
+    color: #fafafa;
+    max-width: 500px;
     margin: auto;
     padding: 15px;
 }
