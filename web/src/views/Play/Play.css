@@ -1,13 +1,7 @@
-.play {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #fafafa;
-}
-
 .play-mjrt {
     text-align: center;
-    margin: 10px 0px;
+    padding: 10px 0px;
+    background: #fafafa;
 }
 
 .play-content {
@@ -19,5 +13,5 @@
     color: #fafafa;
     max-width: 500px;
     margin: auto;
-    padding: 15px;
+    padding: 20px;
 }

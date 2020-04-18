@@ -103,13 +103,6 @@ export default function Login() {
                     </form>
                 </div>
             </div>
-            <div className="motion-twin">
-                Ce jeu est librement inspiré du génial{' '}
-                <a href="http://majority.muxxu.com">Majority</a> de la Motion
-                Twin !<br />
-                N'hésitez pas à contribuer sur{' '}
-                <a href="https://github.com/lonk/mjrt">GitHub</a> !
-            </div>
         </div>
     );
 }

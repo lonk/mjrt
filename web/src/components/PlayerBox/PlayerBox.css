@@ -1,11 +1,14 @@
 .player {
     width: 85px;
     height: 40px;
-    border: 1px solid #222;
-    background: white;
+    background: #fafafa;
+    color: #181d27;
     padding: 10px 10px;
+    margin: 2px;
     display: inline-flex;
     flex-direction: column;
+    border-radius: 4px;
+    border: 1px solid #AFB1B4;
 }
 
 .nickname {
@@ -56,21 +59,26 @@
 }
 
 .a {
-    background: #FBC93D;
+    background: #C0B9DD;
+    border: 1px solid #8886A1;
 }
 
 .b {
-    background: #6CC0E5;
+    background: #C5EFCB;
+    border: 1px solid #8CAA95;
 }
 
 .c {
-    background: #9ACD45;
+    background: #91BEE0;
+    border: 1px solid #6989A3;
 }
 
 .answered {
-    background: #99CC9F;
+    background: #D9AE00;
+    border: 1px solid #997E0D;
 }
 
 .dead {
     background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #181d27;
 }

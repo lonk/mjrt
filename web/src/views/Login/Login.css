@@ -1,9 +1,3 @@
-.login {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
 .login-mjrt {
     text-align: center;
     padding: 10px 0px;
@@ -13,7 +7,6 @@
 .login-content {
     padding-top: 20px;
     text-align: center;
-    flex: 1;
 }
 
 .login-card {
@@ -28,6 +21,7 @@
     padding: 10px;
     background: #fb4f4f;
     color: #181d27;
+    border-radius: 4px;
 }
 
 .login-private {
@@ -35,6 +29,7 @@
     padding: 10px;
     background: #CCA403;
     color: #181d27;
+    border-radius: 4px;
 }
 
 .login-loginForm {
@@ -86,18 +81,4 @@
     text-decoration: none;
     font-size: 1rem;
     font-weight: 600;
-}
-
-.motion-twin {
-    color: #fafafa;
-    padding-top: 10px;
-    font-size: 12px;
-    padding-bottom: 10px;
-    width: 100%;
-    padding: 5px 0;
-    text-align: center;
-}
-
-.motion-twin > a {
-    color: #fafafa;
 }

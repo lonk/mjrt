@@ -94,6 +94,7 @@ export default function Engine() {
     }, []);
 
     const getPlayer = () => {
+        console.log(players.find(player => player.sessionId === serverClient.id))
         return players.find(player => player.sessionId === serverClient.id);
     };
 
@@ -278,9 +279,11 @@ export default function Engine() {
                     answer}
             </Top>
             <div className="players">
-                {players.map(player => (
-                    <PlayerBox key={player.sessionId} player={player} />
-                ))}
+                <div className="players-container">
+                    {players.map(player => (
+                        <PlayerBox key={player.sessionId} player={player} />
+                    ))}
+                </div>
             </div>
             <Notify notify={gameState === GameState.AboutToStart} />
         </div>

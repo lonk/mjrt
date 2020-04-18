@@ -3,7 +3,6 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    position: relative;
     background: #fafafa;
     color: #181d27;
     min-height: 140px;
@@ -43,6 +42,7 @@
     font-size: 20px;
     max-width: 860px;
     padding: 10px;
+    flex: 1;
 }
 
 @media screen and (max-width: 600px) {

@@ -6,33 +6,38 @@
 }
 
 .players {
-    padding: 10px 10px;
     max-width: 860px;
     width: 100%;
     margin: 0 auto;
     justify-content: left;
 }
 
-@media screen and (max-width: 360px) {
-    .players {
-        padding: 5px 5px;
-    }
+.players-container {
+    padding: 10px;
 }
 
 .engine-question {
     flex: 1;
     padding: 10px;
-    font-weight: bold;
-    font-size: 20px;
+    font-size: 28px;
+}
+
+@media screen and (max-width: 360px) {
+    .players-container {
+        padding: 5px;
+    }
+
+    .engine-question {
+        font-size: 24px;
+    }
 }
 
 .engine-answers {
     display: flex;
-    margin: auto;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    width: 90%;
+    width: 100%;
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -42,7 +47,7 @@
     height: 40px;
 }
 
-.engine-finished > a {
+.engine-finished > span > a {
     color: #5A7D7C;
     text-decoration: none;
 }
