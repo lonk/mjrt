@@ -94,7 +94,6 @@ export default function Engine() {
     }, []);
 
     const getPlayer = () => {
-        console.log(players.find(player => player.sessionId === serverClient.id))
         return players.find(player => player.sessionId === serverClient.id);
     };
 
