@@ -17,12 +17,15 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     let gameState: GameState = GameState.WaitingForPlayers;
     let nextState: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
-    let currentQuestion: string;
-    let currentAnswers: string[];
+    let currentQuestion: string | null = null;
+    let currentAnswers: string[] = [];
     const eventEmitter = new EventEmitter();
 
     const isRoomLocked = () =>
-        !(gameState === GameState.WaitingForPlayers || gameState === GameState.AboutToLock);
+        !(
+            gameState === GameState.WaitingForPlayers ||
+            gameState === GameState.AboutToLock
+        );
 
     const attachListenersToPlayer = (newPlayer: Player) => {
         let player = newPlayer;
@@ -168,8 +171,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
                 continue;
             }
 
-            const currentAnswerScore =
-                answersScores.get(player.answer) || 0;
+            const currentAnswerScore = answersScores.get(player.answer) || 0;
             answersScores.set(player.answer, currentAnswerScore + 1);
         }
 
@@ -246,7 +248,9 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
     const endGame = () => {
         restorePlayers();
-        io.to(roomId).emit('nextRoom', { roomId: isPrivate ? generate(): null });
+        io.to(roomId).emit('nextRoom', {
+            roomId: isPrivate ? generate() : null
+        });
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();
@@ -264,5 +268,13 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         }
     };
 
-    return { handlePlayer, gameState, nextState, playersById, eventEmitter };
+    return {
+        handlePlayer,
+        gameState,
+        nextState,
+        playersById,
+        eventEmitter,
+        currentQuestion,
+        currentAnswers
+    };
 };

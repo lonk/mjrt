@@ -57,7 +57,9 @@ const buildRoomsManager = () => {
     };
 
     return {
-        handleSocket
+        handleSocket,
+        currentPublicRoomId,
+        roomsById
     };
 };
 
