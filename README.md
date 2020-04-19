@@ -19,7 +19,27 @@ Sentez-vous libre de proposer des PR en respectant la philosophie suivante:
 - Une base de données de questions et réponses
 
 ## Lancement de la stack
-- git clone https://github.com/lonk/mjrt
-- cd mjrt
-- yarn build
-- yarn serve (port 3001)
+
+Créez les fichiers de configuration suivants :
+- `api/.env` : Fichier de configuration du serveur. Voir le fichier `api/.env.example`.
+- `api/database/vox-questions.json` : Base de données de questions. Voir le fichier `api/database/vox-questions.json.example`.
+- `api/database/vox-answers.json` : Base de données de réponses. Voir le fichier `api/database/vox-answers.json.example`.
+
+### En utilisant Yarn
+
+```sh
+git clone https://github.com/lonk/mjrt
+cd mjrt
+yarn
+yarn deploy
+yarn serve # (port 3001)
+```
+
+### En utilisant Docker
+
+```sh
+docker build -t my-mjrt-app .
+docker run -p 3001:3001 my-mjrt-app
+```
+
+Accès via [localhost:3001](http://localhost:3001).
