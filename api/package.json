@@ -21,6 +21,6 @@
     "scripts": {
         "start": "ts-node-dev src/main",
         "build": "tsc --skipLibCheck",
-        "serve": "cd build && node src/main"
+        "serve": "node build/src/main"
     }
 }
