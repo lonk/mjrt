@@ -72,6 +72,14 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
                 player.offline = true;
             }
 
+            if (player.isRoomMaster) {
+                player.isRoomMaster = false;
+                const players = Array.from(playersById.values());
+                const onlinePlayers = players.filter(p => !p.offline);
+                if (onlinePlayers.length > 0)
+                    setPlayerRoomMaster(onlinePlayers[0]);
+            }
+
             sendPlayers();
             checkIfRoomToDestroy();
         });
