@@ -68,16 +68,10 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
                 gameState === GameState.Finished
             ) {
                 playersById.delete(player.id);
+                if (player.isRoomMaster)
+                    electNewRoomMaster();
             } else {
                 player.offline = true;
-            }
-
-            if (player.isRoomMaster) {
-                player.isRoomMaster = false;
-                const players = Array.from(playersById.values());
-                const onlinePlayers = players.filter(p => !p.offline);
-                if (onlinePlayers.length > 0)
-                    setPlayerRoomMaster(onlinePlayers[0]);
             }
 
             sendPlayers();
@@ -308,12 +302,28 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const endGame = () => {
+        electNewRoomMaster();
         restorePlayers();
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();
         checkIfRoomToDestroy();
     };
+
+    const electNewRoomMaster = () => {
+        const players = Array.from(playersById.values());
+        const roomMasters = players.filter(p => p.isRoomMaster);
+        for (const roomMaster of roomMasters) {
+            if (roomMaster.offline)
+                roomMaster.isRoomMaster = false; // demoting offline room master
+        }
+        if (roomMasters.filter(p => p.isRoomMaster).length === 0)
+        {
+            const onlinePlayers = players.filter(p => !p.offline);
+            if (onlinePlayers.length > 0)
+                setPlayerRoomMaster(onlinePlayers[0]);
+        }
+    }
 
     const checkIfRoomToDestroy = () => {
         const players = Array.from(playersById.values());
