@@ -17,7 +17,9 @@ export interface GameRoom {
     nextState: number | null;
     playersById: Map<string, Player>;
     eventEmitter: EventEmitter;
-    currentQuestion: string | null;
-    currentAnswers: string[];
+    lastQuestion: {
+        question: string;
+        answers: string[];
+    }
     isPrivate: boolean;
 }

@@ -2,12 +2,10 @@ import { EventEmitter } from 'events';
 import { Player, ChosenAnswer, reshapePlayer } from '../player';
 import { io } from '../main';
 import { GameState } from '../game';
-
-import questions from '../../database/vox-questions.json';
-import answers from '../../database/vox-answers.json';
+import { buildQuestionGenerator } from './questions';
 
 // TODO: extract game logic in ../game.ts
-export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
+export const buildEngine = (roomId: string, isPrivate: boolean) => {
     const timeBeforeLock = parseInt(process.env.TIME_BEFORE_LOCK || '0', 10);
     const timeBeforeGameLaunch = parseInt(
         process.env.TIME_BEFORE_LAUNCH || '0',
@@ -22,9 +20,8 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     let gameState: GameState = GameState.WaitingForPlayers;
     let nextState: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
-    let currentQuestion: string | null = null;
-    let currentAnswers: string[] = [];
     const eventEmitter = new EventEmitter();
+    const generator = buildQuestionGenerator();
 
     const isRoomLocked = () =>
         !(
@@ -159,8 +156,6 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
         gameState = GameState.WaitingForPlayers;
         nextState = null;
-        currentQuestion = null;
-        currentAnswers = [];
 
         sendGameState();
         sendPlayers();
@@ -208,14 +203,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const generateQuestion = () => {
-        currentQuestion =
-            questions[Math.floor(Math.random() * questions.length)];
-        currentAnswers = [
-            answers[Math.floor(Math.random() * answers.length)],
-            answers[Math.floor(Math.random() * answers.length)],
-            answers[Math.floor(Math.random() * answers.length)]
-        ];
-
+        generator.generate();
         gameState = GameState.WaitingForAnswers;
         nextState = timeToAnswer + Date.now();
         sendCurrentQuestion();
@@ -303,12 +291,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const sendCurrentQuestion = () => {
-        if (currentQuestion && currentAnswers) {
-            io.to(roomId).emit('currentQuestion', {
-                question: currentQuestion,
-                answers: currentAnswers
-            });
-        }
+        io.to(roomId).emit('currentQuestion', generator.lastQuestion);
     };
 
     const endGame = () => {
@@ -374,11 +357,8 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         },
         playersById,
         eventEmitter,
-        get currentQuestion() {
-            return currentQuestion;
-        },
-        get currentAnswers() {
-            return currentAnswers;
+        get lastQuestion() {
+            return generator.lastQuestion;
         },
         isPrivate
     };

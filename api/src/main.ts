@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 import SocketIO from 'socket.io';
 import dotenv from 'dotenv-safe';
-import { roomsManager } from './game/roomsManager';
+import { roomsManager } from './game/rooms';
 import { login } from './middlewares/login';
 import { monitor } from './monitor';
 

@@ -1,7 +1,7 @@
 import { generate } from 'shortid';
 import { GameRoom } from '../game';
 import { Player, buildPlayer } from '../player';
-import { buildGameRoom } from './gameRoomManager';
+import { buildEngine } from './engine';
 
 type RegistrationMessage = {
     playerId: string;
@@ -35,7 +35,7 @@ const buildRoomsManager = () => {
     };
 
     const createNewRoom = (roomId: string, isPrivate: boolean) => {
-        const room = buildGameRoom(roomId, isPrivate);
+        const room = buildEngine(roomId, isPrivate);
         roomsById.set(roomId, room);
 
         room.eventEmitter.on('lock', () => {
