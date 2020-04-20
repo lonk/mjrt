@@ -312,11 +312,11 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const endGame = () => {
-        electNewRoomMaster();
-        restorePlayers();
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();
+        electNewRoomMaster();
+        restorePlayers();
         checkIfRoomToDestroy();
     };
 
