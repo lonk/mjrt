@@ -322,8 +322,9 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
     const electNewRoomMaster = () => {
         if (
-            gameState !== GameState.WaitingForPlayers &&
-            gameState !== GameState.Finished
+            (gameState !== GameState.WaitingForPlayers &&
+                gameState !== GameState.Finished) ||
+            !isPrivate
         ) {
             return;
         }
