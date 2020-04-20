@@ -68,6 +68,10 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
                 gameState === GameState.Finished
             ) {
                 playersById.delete(player.id);
+
+                if (player.isRoomMaster) {
+                    electNewRoomMaster();
+                }
             } else {
                 player.offline = true;
             }
@@ -135,7 +139,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
             if (gameState === GameState.Finished) {
                 resetRoom();
             }
-        })
+        });
     };
 
     const resetRoom = () => {
@@ -154,7 +158,7 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         sendPlayers();
         sendCurrentQuestion();
     };
- 
+
     const checkIfReadyToLauch = () => {
         const players = Array.from(playersById.values());
 
@@ -300,11 +304,36 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const endGame = () => {
+        electNewRoomMaster();
         restorePlayers();
         gameState = GameState.Finished;
         nextState = null;
         sendGameState();
         checkIfRoomToDestroy();
+    };
+
+    const electNewRoomMaster = () => {
+        console.log('elect');
+        const players = Array.from(playersById.values());
+        let firstPlayerOnline: Player | null = null;
+        let hasRoomMaster = false;
+        for (const player of players) {
+            if (!player.offline && !firstPlayerOnline) {
+                firstPlayerOnline = player;
+            }
+
+            if (player.isRoomMaster) {
+                if (!player.offline) {
+                    hasRoomMaster = true;
+                } else {
+                    player.isRoomMaster = false;
+                }
+            }
+        }
+
+        if (!hasRoomMaster && firstPlayerOnline) {
+            setPlayerRoomMaster(firstPlayerOnline);
+        }
     };
 
     const checkIfRoomToDestroy = () => {
