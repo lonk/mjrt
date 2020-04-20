@@ -58,22 +58,22 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
         player.socket.join(roomId);
 
-        if (isPrivate && Array.from(playersById.keys()).length === 0) {
+        if (
+            isPrivate &&
+            (Array.from(playersById.keys()).length === 0 || player.isRoomMaster)
+        ) {
             setPlayerRoomMaster(player);
         }
 
         player.socket.on('disconnect', () => {
-            if (
-                gameState === GameState.WaitingForPlayers ||
-                gameState === GameState.Finished
-            ) {
-                playersById.delete(player.id);
-
-                if (player.isRoomMaster) {
-                    electNewRoomMaster();
-                }
+            if (gameState === GameState.WaitingForPlayers) {
+                removePlayer(player);
             } else {
                 player.offline = true;
+            }
+
+            if (player.isRoomMaster) {
+                electNewRoomMaster();
             }
 
             sendPlayers();
@@ -124,6 +124,10 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         if (!isRoomLocked()) checkIfReadyToLauch();
     };
 
+    const removePlayer = (player: Player) => {
+        playersById.delete(player.id);
+    };
+
     const setPlayerRoomMaster = (player: Player) => {
         player.isRoomMaster = true;
         player.socket.on('startGame', () => {
@@ -146,7 +150,11 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
         const players = Array.from(playersById.values());
 
         for (const player of players) {
-            player.lives = 3;
+            if (player.offline) {
+                removePlayer(player);
+            } else {
+                player.lives = 3;
+            }
         }
 
         gameState = GameState.WaitingForPlayers;
@@ -313,7 +321,13 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     const electNewRoomMaster = () => {
-        console.log('elect');
+        if (
+            gameState !== GameState.WaitingForPlayers &&
+            gameState !== GameState.Finished
+        ) {
+            return;
+        }
+
         const players = Array.from(playersById.values());
         let firstPlayerOnline: Player | null = null;
         let hasRoomMaster = false;
