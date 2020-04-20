@@ -312,16 +312,18 @@ export const buildGameRoom = (roomId: string, isPrivate: boolean) => {
 
     const electNewRoomMaster = () => {
         const players = Array.from(playersById.values());
-        const roomMasters = players.filter(p => p.isRoomMaster);
-        for (const roomMaster of roomMasters) {
-            if (roomMaster.offline)
-                roomMaster.isRoomMaster = false; // demoting offline room master
-        }
-        if (roomMasters.filter(p => p.isRoomMaster).length === 0)
-        {
-            const onlinePlayers = players.filter(p => !p.offline);
-            if (onlinePlayers.length > 0)
-                setPlayerRoomMaster(onlinePlayers[0]);
+        let firstPlayerOnline: Player | null = null;
+        let hasRoomMaster = true;
+        for (const player of players) {
+            if (!player.offline && !firstPlayerOnline) firstPlayerOnline = player;
+            if (player.isRoomMaster && roomMaster.offline)  {
+                  roomMaster.isRoomMaster = false;
+                  hasRoomMaster = false;
+            }
+            if (firstPlayerOnline && !hasRoomMaster) {
+                 firstPlayerOnline.isRoomMaster = true;
+                 break;
+            }
         }
     }
 
