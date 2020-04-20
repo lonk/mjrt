@@ -17,7 +17,7 @@ io.on('connection', (socket: SocketIO.Socket) => {
     roomsManager.handleSocket(socket);
 });
 
-app.use('/', express.static('../../web/build'));
+app.use('/', express.static('../web/build'));
 
 app.get('/monitor', login, monitor);
 
