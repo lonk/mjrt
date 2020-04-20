@@ -18,7 +18,7 @@
 
 @media screen and (max-width: 360px) {
     .player {
-        width: 75px;
+        width: 71px;
         height: 30px;
         padding: 5px 5px;
     }
@@ -52,6 +52,12 @@
     font-size: 15px;
     height: 16px;
     margin-right: 3px;
+}
+
+@media screen and (max-width: 360px) {
+    .offline, .master {
+        font-size: 13px;
+    }
 }
 
 .live {
