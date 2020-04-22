@@ -4,15 +4,7 @@ import { buildGame } from '../engine/game';
 import { GameState } from '../game';
 import { Player, reshapePlayer, ChosenAnswer } from '../player';
 
-export interface Room {
-    socketsById: Map<string, SocketIO.Socket>;
-    emitter: EventEmitter;
-    handleSocket: (
-        socket: SocketIO.Socket,
-        playerId: string,
-        nickname: string
-    ) => void;
-}
+export type Room = ReturnType<typeof buildRoom>;
 
 export const buildRoom = (roomId: string, isPrivate: boolean) => {
     const socketsById: Map<string, SocketIO.Socket> = new Map();
@@ -121,7 +113,9 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     };
 
     return {
+        roomId,
         socketsById,
+        game,
         emitter,
         handleSocket
     };

@@ -7,6 +7,8 @@ import { computeMissingVotes } from './tools/computeMissingVotes';
 import { getTimers } from './tools/getTimers';
 import { findNewRoomMaster } from './tools/findNewRoomMaster';
 
+export type Game = ReturnType<typeof buildGame>;
+
 export const buildGame = (isPrivate: boolean) => {
     const {
         timeBeforeLock,
@@ -230,6 +232,7 @@ export const buildGame = (isPrivate: boolean) => {
         setPlayerOffline,
         emitter,
         generator,
+        isPrivate,
         get players() {
             return Array.from(playersById.values());
         },
