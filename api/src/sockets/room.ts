@@ -23,8 +23,13 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     });
 
     game.emitter.on('gameState', () => {
-        const { gameState, duration } = game;
-        io.to(roomId).emit('gameState', { gameState, duration, isPrivate });
+        const { gameState, duration, round } = game;
+        io.to(roomId).emit('gameState', {
+            gameState,
+            duration,
+            round,
+            isPrivate
+        });
 
         if (gameState === GameState.AboutToStart) {
             emitter.emit('lock');
@@ -55,7 +60,9 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     ) => {
         const formerSocket = socketsById.get(playerId);
         if (formerSocket && formerSocket.connected) {
-            socket.emit('registration', { code: RegisterState.AlreadyConnected });
+            socket.emit('registration', {
+                code: RegisterState.AlreadyConnected
+            });
             return;
         }
 
@@ -102,7 +109,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
                 gameState,
                 duration,
                 stateStart,
-                generator
+                generator,
+                round
             } = game;
             const elapsedDuration = Date.now() - stateStart;
             const remainingDuration = duration
@@ -116,7 +124,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
             socket.emit('gameState', {
                 gameState,
                 duration: remainingDuration,
-                isPrivate
+                isPrivate,
+                round
             });
 
             if (generator.lastQuestion) {

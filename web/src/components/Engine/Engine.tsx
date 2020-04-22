@@ -23,7 +23,8 @@ export default function Engine() {
         isPrivate: false,
         question: null,
         answers: [],
-        players: []
+        players: [],
+        round: 0
     });
 
     const updateServerState = (updatedFields: Partial<ServerState>) =>
@@ -35,8 +36,8 @@ export default function Engine() {
     useEffect(() => {
         serverClient.on(
             'gameState',
-            ({ gameState, duration, isPrivate }: GameStateMessage) => {
-                updateServerState({ gameState, isPrivate });
+            ({ gameState, duration, round, isPrivate }: GameStateMessage) => {
+                updateServerState({ gameState, round, isPrivate });
                 setCountdown(duration ? Date.now() + duration : null);
             }
         );

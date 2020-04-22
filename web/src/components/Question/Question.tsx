@@ -50,6 +50,7 @@ export default function Question({ serverState, onSelected }: Props) {
 
     return (
         <div className={styles.question}>
+            <div className={styles.round}>Question {serverState.round}</div>
             <div className={styles.questionText}>{serverState.question}</div>
             <div className={styles.answers}>
                 <Answer

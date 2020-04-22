@@ -23,6 +23,7 @@ export const buildGame = (isPrivate: boolean) => {
     let stateStart: number = Date.now();
     let duration: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
+    let round: number = 0;
 
     const addPlayer = (playerId: string, nickname: string) => {
         const isRoomMaster =
@@ -80,6 +81,7 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const launchGame = () => {
+        round = 0;
         clearTimeout(nextStepTimer);
         updateGameState(GameState.AboutToStart);
         nextStepTimer = setTimeout(generateQuestion, timeBeforeGameLaunch);
@@ -158,6 +160,7 @@ export const buildGame = (isPrivate: boolean) => {
     const sendPlayers = () => emitter.emit('players');
 
     const generateQuestion = () => {
+        round += 1;
         restorePlayers();
         generator.generate();
         updateGameState(GameState.WaitingForAnswers);
@@ -235,6 +238,9 @@ export const buildGame = (isPrivate: boolean) => {
         },
         get duration() {
             return duration;
+        },
+        get round() {
+            return round;
         }
     };
 };

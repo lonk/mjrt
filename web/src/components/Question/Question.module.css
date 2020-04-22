@@ -2,15 +2,22 @@
     flex: 1;
 }
 
+.round {
+    font-size: 20px;
+}
+
 .questionText {
-    padding: 10px;
+    padding: 0px 10px 10px 10px;
     font-size: 28px;
-    width: 100%;
 }
 
 @media screen and (max-width: 360px) {
     .questionText {
-        font-size: 24px;
+        font-size: 20px;
+    }
+
+    .round {
+        font-size: 16px;
     }
 }
 

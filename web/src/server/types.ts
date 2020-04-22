@@ -25,8 +25,9 @@ export type Player = {
 
 export type GameStateMessage = {
     gameState: GameState;
-    duration: number;
+    duration: number | null;
     isPrivate: boolean;
+    round: number;
 };
 
 export type CurrentQuestionMessage = {
@@ -68,4 +69,5 @@ export interface ServerState {
     question: string | null;
     answers: string[];
     players: Player[];
+    round: number;
 }
