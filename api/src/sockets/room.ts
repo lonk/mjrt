@@ -31,6 +31,10 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
             isPrivate
         });
 
+        if (gameState === GameState.WaitingForPlayers) {
+            purgeRoom();
+        }
+
         if (gameState === GameState.AboutToStart) {
             emitter.emit('lock');
         }
@@ -140,6 +144,17 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         socket.on('resetRoom', () => {
             game.handleRoomReset(playerId);
         });
+    };
+
+    const purgeRoom = () => {
+        const sockets = Array.from(socketsById.entries());
+
+        for (const [playerId, socket] of sockets) {
+            if (socket.disconnected) {
+                game.removePlayer(playerId);
+                socketsById.delete(playerId);
+            }
+        }
     };
 
     const checkIfRoomToDestroy = () => {
