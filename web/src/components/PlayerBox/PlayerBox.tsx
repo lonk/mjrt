@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaHeart, FaCrown } from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
-import { Player, ChosenAnswer } from '../Engine/Engine';
+import { Player, ChosenAnswer } from '../../server/types';
 import styles from './PlayerBox.module.css';
 
 interface Props {
@@ -20,12 +20,13 @@ export default function PlayerBox(props: Props) {
         case ChosenAnswer.C:
             classToApply.push(styles.c);
             break;
+        case ChosenAnswer.Answered:
+            classToApply.push(styles.answered);
+            break;
         default:
-            // do nothing
-    }
-    
-    if (props.player.lives === 0) {
-        classToApply.push(styles.dead);
+            if (props.player.lives === 0) {
+                classToApply.push(styles.dead);
+            }
     }
 
     const classNames = classToApply.join(' ');
@@ -33,7 +34,10 @@ export default function PlayerBox(props: Props) {
 
     for (let i = 0; i < props.player.lives; i++) {
         lives.push(
-            <FaHeart key={`${props.player.sessionId}_${i}`} className="live" />
+            <FaHeart
+                key={`${props.player.sessionId}_${i}`}
+                className={styles.live}
+            />
         );
     }
 

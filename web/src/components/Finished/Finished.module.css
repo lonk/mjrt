@@ -1,0 +1,8 @@
+.finished > span > a {
+    color: #5A7D7C;
+    text-decoration: none;
+}
+
+.finished {
+    padding: 0 5px 5px 5px;
+}

@@ -2,86 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { serverClient } from '../../server';
 import PlayerBox from '../PlayerBox/PlayerBox';
 import Top from '../Top/Top';
-import Answer from '../Answer/Answer';
+import WaitingForPlayers from '../WaitingForPlayers/WaitingForPlayers';
+import Question from '../Question/Question';
+import Finished from '../Finished/Finished';
 import Notify from '../Notify/Notify';
-
-import './Engine.css';
-
-// Todo: put it in root
-enum GameState {
-    WaitingForPlayers,
-    AboutToLock,
-    AboutToStart,
-    WaitingForAnswers,
-    DisplayScores,
-    Finished
-}
-
-export enum ChosenAnswer {
-    A,
-    B,
-    C,
-    Answered
-}
-
-export type Player = {
-    sessionId: string;
-    nickname: string;
-    answer: ChosenAnswer | null;
-    lives: number;
-    offline: boolean;
-    isRoomMaster: boolean;
-};
-
-export type GameStateMessage = {
-    gameState: GameState;
-    duration: number;
-    isPrivate: boolean;
-};
-
-export type CurrentQuestionMessage = {
-    question: string;
-    answers: string[];
-};
-
-export type PlayersMessage = {
-    players: Player[];
-};
+import {
+    GameState,
+    ChosenAnswer,
+    GameStateMessage,
+    CurrentQuestionMessage,
+    PlayersMessage,
+    ServerState
+} from '../../server/types';
+import styles from './Engine.module.css';
 
 export default function Engine() {
-    const [gameState, setGameState] = useState(GameState.WaitingForPlayers);
-    const [isPrivate, setIsPrivate] = useState(false);
-    const [currentQuestion, setCurrentQuestion] = useState<string>('');
-    const [currentAnswers, setCurrentAnswers] = useState<string[]>([]);
-    const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
-    const [players, setPlayers] = useState<Player[]>([]);
     const [countdown, setCountdown] = useState<number | null>();
+    const [serverState, setServerState] = useState<ServerState>({
+        gameState: GameState.WaitingForPlayers,
+        isPrivate: false,
+        question: null,
+        answers: [],
+        players: []
+    });
+
+    const updateServerState = (updatedFields: Partial<ServerState>) =>
+        setServerState(currentServerState => ({
+            ...currentServerState,
+            ...updatedFields
+        }));
 
     useEffect(() => {
         serverClient.on(
             'gameState',
-            ({
-                gameState,
-                duration,
-                isPrivate: privateRoom
-            }: GameStateMessage) => {
-                setGameState(gameState);
+            ({ gameState, duration, isPrivate }: GameStateMessage) => {
+                updateServerState({ gameState, isPrivate });
                 setCountdown(duration ? Date.now() + duration : null);
-                setIsPrivate(privateRoom);
             }
         );
 
         serverClient.on(
             'currentQuestion',
             ({ question, answers }: CurrentQuestionMessage) => {
-                setChosenAnswer(null);
-                setCurrentQuestion(question);
-                setCurrentAnswers(answers);
+                updateServerState({ question, answers });
             }
         );
 
-        serverClient.on('players', (message: PlayersMessage) => {
-            setPlayers(message.players);
+        serverClient.on('players', ({ players }: PlayersMessage) => {
+            updateServerState({ players });
         });
 
         serverClient.emit('getState');
@@ -93,15 +61,8 @@ export default function Engine() {
         };
     }, []);
 
-    const getPlayer = () => {
-        return players.find(player => player.sessionId === serverClient.id);
-    };
-
     const voteAnswer = (vote: ChosenAnswer) => {
-        if (gameState === GameState.WaitingForAnswers) {
-            setChosenAnswer(vote);
-            serverClient.emit('vote', { vote });
-        }
+        serverClient.emit('vote', { vote });
     };
 
     const startGame = () => {
@@ -112,179 +73,49 @@ export default function Engine() {
         serverClient.emit('resetRoom');
     };
 
-    const isCurrentPlayerAlive = () => {
-        const currentPlayer = getPlayer();
-
-        return Boolean(currentPlayer && currentPlayer.lives > 0);
-    };
-
-    const question = <div className="engine-question">{currentQuestion}</div>;
-    const answer = (
-        <div className="engine-answers">
-            <Answer
-                letter="A"
-                answer={currentAnswers[0]}
-                score={
-                    gameState === GameState.DisplayScores &&
-                    players.filter(player => player.answer === ChosenAnswer.A)
-                        .length
-                }
-                selected={chosenAnswer === ChosenAnswer.A}
-                disabled={
-                    gameState !== GameState.WaitingForAnswers ||
-                    !isCurrentPlayerAlive()
-                }
-                onClick={() => voteAnswer(ChosenAnswer.A)}
-            />
-            <Answer
-                letter="B"
-                answer={currentAnswers[1]}
-                score={
-                    gameState === GameState.DisplayScores &&
-                    players.filter(player => player.answer === ChosenAnswer.B)
-                        .length
-                }
-                selected={chosenAnswer === ChosenAnswer.B}
-                disabled={
-                    gameState !== GameState.WaitingForAnswers ||
-                    !isCurrentPlayerAlive()
-                }
-                onClick={() => voteAnswer(ChosenAnswer.B)}
-            />
-            <Answer
-                letter="C"
-                answer={currentAnswers[2]}
-                score={
-                    gameState === GameState.DisplayScores &&
-                    players.filter(player => player.answer === ChosenAnswer.C)
-                        .length
-                }
-                selected={chosenAnswer === ChosenAnswer.C}
-                disabled={
-                    gameState !== GameState.WaitingForAnswers ||
-                    !isCurrentPlayerAlive()
-                }
-                onClick={() => voteAnswer(ChosenAnswer.C)}
-            />
-        </div>
-    );
-
-    const waitingForPlayers = (
-        <div className="engine-between">
-            {isPrivate && players.length <= 2 && (
-                <span>En attente de 3 joueurs pour lancer la partie.</span>
-            )}
-            {isPrivate && players.length > 2 && !getPlayer()?.isRoomMaster && (
-                <span>En attente du feu vert du créateur de la partie.</span>
-            )}
-            {isPrivate && players.length > 2 && getPlayer()?.isRoomMaster && (
-                <span>
-                    Cliquez{' '}
-                    <a href="#" onClick={e => startGame()}>
-                        ici
-                    </a>{' '}
-                    pour lancer la partie.
-                </span>
-            )}
-            {!isPrivate && (
-                <span>En attente de 5 joueurs pour lancer la partie.</span>
-            )}
-            <br />
-            {!getPlayer()?.isRoomMaster && (
-                <span>
-                    Nous vous enverrons une notification quand la partie sera
-                    sur le point de commencer !
-                </span>
-            )}
-        </div>
-    );
-
     const aboutToLock = (
-        <div className="engine-between">En attente des derniers joueurs.</div>
+        <div className={styles.simpleText}>
+            En attente des derniers joueurs.
+        </div>
     );
 
     const aboutToStart = (
-        <div className="engine-between">
+        <div className={styles.simpleText}>
             Les joueurs sont au complet ! La partie va pouvoir commencer.
         </div>
     );
 
-    const generateWinners = () => {
-        const winners = players.filter(player => player.lives > 0);
-
-        if (winners.length === 0) {
-            return <span>Il n'y a eu aucun gagnant.</span>;
-        } else if (winners.length === 1) {
-            return (
-                <span>
-                    Notre grand gagnant est{' '}
-                    <strong>{winners[0].nickname}</strong> ! Un grand bravo à
-                    lui !
-                </span>
-            );
-        } else if (winners.length === 2) {
-            return (
-                <span>
-                    On applaudit <strong>{winners[0].nickname}</strong> et{' '}
-                    <strong>{winners[1].nickname}</strong> pour cette partie
-                    exemplaire !
-                </span>
-            );
-        }
-
-        return <span></span>;
-    };
-
-    const finished = (
-        <div className="engine-finished">
-            {!isPrivate && (
-                <span>
-                    Partie terminée, cliquez <a href="/play">ici</a> pour
-                    rejouer !
-                </span>
-            )}
-            {isPrivate && !getPlayer()?.isRoomMaster && (
-                <span>
-                    Partie terminée, le créateur de la partie peut maintenant en
-                    relancer une.
-                </span>
-            )}
-            {isPrivate && getPlayer()?.isRoomMaster && (
-                <span>
-                    Partie terminée, cliquez{' '}
-                    <a href="#" onClick={e => resetRoom()}>
-                        ici
-                    </a>{' '}
-                    pour relancer une partie.
-                </span>
-            )}
-            <br />
-            {generateWinners()}
-        </div>
-    );
-
     return (
-        <div className="engine">
+        <div className={styles.engine}>
             <Top countdown={countdown}>
-                {gameState === GameState.WaitingForPlayers && waitingForPlayers}
-                {gameState === GameState.AboutToLock && aboutToLock}
-                {gameState === GameState.AboutToStart && aboutToStart}
-                {gameState === GameState.Finished && finished}
-                {(gameState === GameState.DisplayScores ||
-                    gameState === GameState.WaitingForAnswers) &&
-                    question}
-                {(gameState === GameState.WaitingForAnswers ||
-                    gameState === GameState.DisplayScores) &&
-                    answer}
+                {serverState.gameState === GameState.WaitingForPlayers && (
+                    <WaitingForPlayers
+                        serverState={serverState}
+                        onStart={startGame}
+                    />
+                )}
+                {serverState.gameState === GameState.AboutToLock && aboutToLock}
+                {serverState.gameState === GameState.AboutToStart &&
+                    aboutToStart}
+                {serverState.gameState === GameState.Finished && (
+                    <Finished serverState={serverState} onRestart={resetRoom} />
+                )}
+                {(serverState.gameState === GameState.DisplayScores ||
+                    serverState.gameState === GameState.WaitingForAnswers) && (
+                    <Question
+                        serverState={serverState}
+                        onSelected={voteAnswer}
+                    />
+                )}
             </Top>
-            <div className="players">
-                <div className="players-container">
-                    {players.map(player => (
+            <div className={styles.players}>
+                <div className={styles.playersContainer}>
+                    {serverState.players.map(player => (
                         <PlayerBox key={player.sessionId} player={player} />
                     ))}
                 </div>
             </div>
-            <Notify notify={gameState === GameState.AboutToStart} />
+            <Notify notify={serverState.gameState === GameState.AboutToStart} />
         </div>
     );
 }

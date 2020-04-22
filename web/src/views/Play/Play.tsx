@@ -3,30 +3,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import { serverClient } from '../../server';
 import Engine from '../../components/Engine/Engine';
 import LoggedOut from '../../layouts/LoggedOut/LoggedOut';
-
-enum SocketState {
-    Connecting,
-    Connected,
-    Disconnected
-}
-
-enum RegisterState {
-    Pending,
-    Registered,
-    AlreadyConnected,
-    RoomLocked
-}
-
-type RegisteredPayload = {
-    code: RegisterState.Registered;
-    roomId: string;
-};
-
-type ErrorPayload = {
-    code: RegisterState.AlreadyConnected | RegisterState.RoomLocked;
-};
-
-type RegistrationPayload = RegisteredPayload | ErrorPayload;
+import {
+    SocketState,
+    RegisterState,
+    RegistrationPayload
+} from '../../server/types';
 
 export default function Play() {
     const history = useHistory();

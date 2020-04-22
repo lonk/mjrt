@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Notification from 'react-web-notification';
 
-export default function Notify(props: any) {
+interface Props {
+    notify: boolean;
+}
+
+export default function Notify({ notify }: Props) {
     const [isGranted, setIsGranted] = useState(false);
     const [notificationShown, setNotificationShown] = useState(true);
     const [registration, setRegistration] = useState<
@@ -20,11 +24,11 @@ export default function Notify(props: any) {
     }, []);
 
     useEffect(() => {
-        if (props.notify) {
+        if (notify) {
             setNotificationShown(false);
             audio.play();
         }
-    }, [props.notify]);
+    }, [notify]);
 
     const registerSw = async () => {
         const navigatorRegistration = await navigator.serviceWorker.register(

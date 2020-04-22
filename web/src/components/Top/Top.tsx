@@ -1,27 +1,27 @@
 import React from 'react';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
-import './Top.css';
 import Countdown from 'react-countdown';
+import styles from './Top.module.css';
 
 export default function Top(props: any) {
     return (
-        <div className="top">
-            <div className="top-logo">
+        <div className={styles.top}>
+            <div className={styles.logo}>
                 <img src="/logo.png" alt="MJRT" width="150" />
-                <div className="top-icons">
+                <div className={styles.icons}>
                     <a href="https://twitter.com/MjrtNet">
-                        <FaTwitter className="top-twitter" />
+                        <FaTwitter className={styles.icon} />
                     </a>
                     <a href="https://discord.gg/wqMxG4s">
-                        <FaDiscord className="top-discord" />
+                        <FaDiscord className={styles.icon} />
                     </a>
                 </div>
             </div>
-            <div className="top-content">
+            <div className={styles.content}>
                 {props.children}
 
                 {props.countdown !== null && (
-                    <div className="countdown">
+                    <div className={styles.countdown}>
                         <strong>Temps restant :</strong>{' '}
                         <Countdown
                             date={props.countdown}
@@ -35,7 +35,7 @@ export default function Top(props: any) {
                     </div>
                 )}
             </div>
-            <div className="top-logo"></div>
+            <div className={styles.logo}></div>
         </div>
     );
 }

@@ -1,0 +1,35 @@
+.engine {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.players {
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: left;
+    overflow: auto;
+    flex: 1;
+}
+
+.playersContainer {
+    padding: 10px;
+}
+
+@media screen and (max-width: 360px) {
+    .players-container {
+        padding: 5px;
+    }
+}
+
+.simpleText > span > a {
+    color: #5A7D7C;
+    text-decoration: none;
+}
+
+.simpleText {
+    padding: 0 5px 5px 5px;
+}
