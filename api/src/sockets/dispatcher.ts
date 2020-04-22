@@ -23,8 +23,6 @@ const buildDispatcher = () => {
                 const roomToDispatch = getRoomToDispatch(roomIdToDispatch);
 
                 roomToDispatch.handleSocket(socket, playerId, nickname);
-
-                socket.emit('registered', { roomId: roomIdToDispatch });
             }
         );
     };

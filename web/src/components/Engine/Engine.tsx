@@ -66,7 +66,6 @@ export default function Engine() {
                 isPrivate: privateRoom
             }: GameStateMessage) => {
                 setGameState(gameState);
-                console.log(duration)
                 setCountdown(duration ? Date.now() + duration : null);
                 setIsPrivate(privateRoom);
             }

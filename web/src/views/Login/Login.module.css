@@ -1,0 +1,15 @@
+.lost {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #fb4f4f;
+    color: #181d27;
+    border-radius: 4px;
+}
+
+.private {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #CCA403;
+    color: #181d27;
+    border-radius: 4px;
+}

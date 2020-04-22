@@ -1,17 +1,17 @@
-.play-mjrt {
+.header {
     text-align: center;
     padding: 10px 0px;
     background: #fafafa;
 }
 
-.play-content {
+.container {
+    padding-top: 20px;
     text-align: center;
-    flex: 1;
 }
 
-.play-card {
+.content {
     color: #fafafa;
     max-width: 500px;
     margin: auto;
-    padding: 20px;
+    padding: 15px;
 }

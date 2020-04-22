@@ -6,6 +6,13 @@ import { reshapePlayer, ChosenAnswer } from '../player';
 
 export type Room = ReturnType<typeof buildRoom>;
 
+enum RegisterState {
+    Pending,
+    Registered,
+    AlreadyConnected,
+    RoomLocked
+}
+
 export const buildRoom = (roomId: string, isPrivate: boolean) => {
     const socketsById: Map<string, SocketIO.Socket> = new Map();
     const emitter = new EventEmitter();
@@ -48,14 +55,16 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     ) => {
         const formerSocket = socketsById.get(playerId);
         if (formerSocket && formerSocket.connected) {
-            socket.emit('err', 'playerAlreadyConnected');
+            socket.emit('registration', { code: RegisterState.AlreadyConnected });
             return;
         }
 
         if (!formerSocket && isGameLocked()) {
-            socket.emit('err', 'roomLocked');
+            socket.emit('registration', { code: RegisterState.RoomLocked });
             return;
         }
+
+        socket.emit('registration', { code: RegisterState.Registered, roomId });
 
         socketsById.set(playerId, socket);
         socket.join(roomId);

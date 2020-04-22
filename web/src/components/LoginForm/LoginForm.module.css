@@ -1,57 +1,23 @@
-.login-mjrt {
-    text-align: center;
-    padding: 10px 0px;
-    background: #fafafa;
-}
-
-.login-content {
-    padding-top: 20px;
-    text-align: center;
-}
-
-.login-card {
-    color: #fafafa;
-    max-width: 500px;
-    margin: auto;
-    padding: 15px;
-}
-
-.login-lost {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #fb4f4f;
-    color: #181d27;
-    border-radius: 4px;
-}
-
-.login-private {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #CCA403;
-    color: #181d27;
-    border-radius: 4px;
-}
-
-.login-loginForm {
+.form {
     text-align: center;
     margin: 20px 0;
 }
 
-.login-privateBox {
+.privateBox {
     margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.login-privateBox > input {
+.privateBox > input {
     width: 20px;
     height: 20px;
     margin-right: 10px;
     background: #fafafa;
 }
 
-.login-oneLine {
+.nicknameContainer {
     background: #fafafa;
     display: inline-flex;
     border-radius: 23px;
@@ -59,7 +25,7 @@
     align-items: center;
 }
 
-.login-nickname {
+.nickname {
     width: 180px;
     border: 0;
     font-size: 1rem;
@@ -70,7 +36,7 @@
     margin: 0 10px 0 15px;
 }
 
-.login-submit {
+.submit {
     height: 42px;
     padding: 0 16px;
     border: 0;

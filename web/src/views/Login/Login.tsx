@@ -1,19 +1,18 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { generate } from 'shortid';
 import { serverClient } from '../../server';
-import './Login.css';
+import styles from './Login.module.css';
+import LoginForm from '../../components/LoginForm/LoginForm';
+import LoggedOut from '../../layouts/LoggedOut/LoggedOut';
 
 export default function Login() {
-    const [nickname, setNickname] = useState('');
     const [socketLost, setSocketLost] = useState(false);
-    const [createPrivate, setCreatePrivate] = useState(false);
 
     const history = useHistory();
     const { id } = useParams();
 
-    const submitLogin = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = (nickname: string, createPrivate: boolean) => {
         localStorage.setItem('nickname', nickname);
         if (!localStorage.getItem('playerId')) {
             localStorage.setItem('playerId', generate());
@@ -38,13 +37,13 @@ export default function Login() {
     };
 
     const displaySocketLost = (
-        <div className="login-lost">
+        <div className={styles.lost}>
             Le serveur est injoignable, veuillez ré-essayer plus tard.
         </div>
     );
 
     const privateRoom = (
-        <div className="login-private">
+        <div className={styles.private}>
             <strong>Attention</strong>
             <br />
             Vous allez rejoindre une partie privée !
@@ -52,57 +51,18 @@ export default function Login() {
     );
 
     return (
-        <div className="login">
-            <div className="login-mjrt">
-                <img src="/logo.png" alt="MJRT" width="250" />
-            </div>
-            <div className="login-content">
-                <div className="login-card">
-                    {socketLost && displaySocketLost}
-                    {Boolean(id) && !socketLost && privateRoom}
-                    Une question, trois réponses insensées.
-                    <br />
-                    Choisissez comme la majorité pour rester en vie.
-                    <br />
-                    Combien de tours survivrez-vous ?
-                    <form onSubmit={submitLogin} className="login-loginForm">
-                        <div className="login-oneLine">
-                            <input
-                                type="text"
-                                className="login-nickname"
-                                name="nickname"
-                                placeholder="Pseudo (2-12 caractères)"
-                                pattern="\w{2,12}"
-                                required
-                                value={nickname}
-                                onChange={e => setNickname(e.target.value)}
-                                title="Veuillez utiliser entre 2 et 12 caractères alphanumériques"
-                            />
-                            <input
-                                type="submit"
-                                value="JOUER !"
-                                className="login-submit"
-                            />
-                        </div>
-
-                        {!Boolean(id) && (
-                            <div className="login-privateBox">
-                                <input
-                                    type="checkbox"
-                                    id="private"
-                                    checked={createPrivate}
-                                    onChange={e =>
-                                        setCreatePrivate(!createPrivate)
-                                    }
-                                />
-                                <label htmlFor="private">
-                                    Créer une partie privée
-                                </label>
-                            </div>
-                        )}
-                    </form>
-                </div>
-            </div>
-        </div>
+        <LoggedOut>
+            {socketLost && displaySocketLost}
+            {Boolean(id) && !socketLost && privateRoom}
+            Une question, trois réponses insensées.
+            <br />
+            Choisissez comme la majorité pour rester en vie.
+            <br />
+            Combien de tours survivrez-vous ?
+            <LoginForm
+                onSubmit={handleSubmit}
+                allowPrivateCreation={Boolean(id)}
+            />
+        </LoggedOut>
     );
 }
