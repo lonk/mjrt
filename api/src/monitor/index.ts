@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
-import { roomsManager } from '../game/roomsManager';
+import { dispatcher } from '../sockets/dispatcher';
 
 export const monitor = (req: Request, res: Response) => {
-    const rooms = Array.from(roomsManager.roomsById.values()).map(room => ({
+    const rooms = Array.from(dispatcher.roomsById.values()).map(room => ({
         id: room.roomId,
-        gameState: room.gameState,
-        nextState: room.nextState,
-        currentQuestion: room.currentQuestion,
-        currentAnswers: room.currentAnswers,
-        isPrivate: room.isPrivate,
-        players: Array.from(room.playersById.values()).map(player => ({
+        gameState: room.game.gameState,
+        stateStart: room.game.stateStart,
+        duration: room.game.duration,
+        lastQuestion: room.game.generator.lastQuestion,
+        isPrivate: room.game.isPrivate,
+        players: room.game.players.map(player => ({
             id: player.id,
-            sessionId: player.socket.id,
+            sessionId: room.socketsById.get(player.id)!.id,
             nickname: player.nickname,
             lives: player.lives,
             offline: player.offline,

@@ -1,0 +1,30 @@
+.question {
+    flex: 1;
+}
+
+.questionText {
+    padding: 10px;
+    font-size: 28px;
+    width: 100%;
+}
+
+@media screen and (max-width: 360px) {
+    .questionText {
+        font-size: 24px;
+    }
+}
+
+.answers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.answer {
+    width: 30%;
+    height: 40px;
+}
