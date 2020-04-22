@@ -35,7 +35,7 @@ export type Player = {
 
 export type GameStateMessage = {
     gameState: GameState;
-    nextState?: number;
+    duration: number;
     isPrivate: boolean;
 };
 
@@ -55,18 +55,19 @@ export default function Engine() {
     const [currentAnswers, setCurrentAnswers] = useState<string[]>([]);
     const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
     const [players, setPlayers] = useState<Player[]>([]);
-    const [countdown, setCountdown] = useState<number | undefined>();
+    const [countdown, setCountdown] = useState<number | null>();
 
     useEffect(() => {
         serverClient.on(
             'gameState',
             ({
                 gameState,
-                nextState,
+                duration,
                 isPrivate: privateRoom
             }: GameStateMessage) => {
                 setGameState(gameState);
-                setCountdown(nextState);
+                console.log(duration)
+                setCountdown(duration ? Date.now() + duration : null);
                 setIsPrivate(privateRoom);
             }
         );

@@ -40,6 +40,10 @@ export const buildQuestionGenerator = () => {
     };
 
     const getLastQuestion = () => {
+        if (!question) {
+            return;
+        }
+
         return {
             question,
             answers

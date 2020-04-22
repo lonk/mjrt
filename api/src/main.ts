@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 import SocketIO from 'socket.io';
 import dotenv from 'dotenv-safe';
-import { roomsManager } from './game/rooms';
+import { dispatcher } from './sockets/dispatcher';
 import { login } from './middlewares/login';
 import { monitor } from './monitor';
 
@@ -14,7 +14,7 @@ const server = http.createServer(app);
 export const io = SocketIO(server);
 
 io.on('connection', (socket: SocketIO.Socket) => {
-    roomsManager.handleSocket(socket);
+    dispatcher.handleSocket(socket);
 });
 
 app.use('/', express.static('../web/build'));

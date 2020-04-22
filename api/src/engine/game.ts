@@ -20,28 +20,23 @@ export const buildGame = (isPrivate: boolean) => {
     let playersById: Map<string, Player> = new Map();
     const emitter = new EventEmitter();
     let gameState: GameState = GameState.WaitingForPlayers;
-    let stateStart: number | null = null;
+    let stateStart: number = Date.now();
     let duration: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
 
     const addPlayer = (playerId: string, nickname: string) => {
-        const formerPlayer = playersById.get(playerId);
         const isRoomMaster =
             Array.from(playersById.values()).length === 0 && isPrivate;
-        let player = buildPlayer(playerId, nickname, isRoomMaster);
-        if (formerPlayer) {
-            player = {
-                ...player,
-                offline: false
-            };
-        }
+        const player = buildPlayer(playerId, nickname, isRoomMaster);
 
         playersById.set(playerId, player);
+        sendPlayers();
         checkIfReadyToLauch();
     };
 
     const removePlayer = (playerId: string) => {
         playersById.delete(playerId);
+        sendPlayers();
         electNewRoomMaster();
     };
 
@@ -52,20 +47,19 @@ export const buildGame = (isPrivate: boolean) => {
         switch (gameState) {
             case GameState.AboutToLock:
                 duration = timeBeforeLock;
-                return;
+                break;
             case GameState.AboutToStart:
                 duration = timeBeforeGameLaunch;
-                return;
+                break;
             case GameState.WaitingForAnswers:
                 duration = timeToAnswer;
-                return;
+                break;
             case GameState.DisplayScores:
                 duration = timeToDisplayAnswers;
-                return;
+                break;
             default:
-                duration = 0;
+                duration = null;
         }
-
         emitter.emit('gameState');
     };
 
@@ -145,36 +139,34 @@ export const buildGame = (isPrivate: boolean) => {
         }
     };
 
-    const handleStartGame = (playerId: string) => {
+    const handleRoomReset = (playerId: string) => {
         const player = playersById.get(playerId);
 
-        if (player?.isRoomMaster) {
+        if (player && player.isRoomMaster && gameState === GameState.Finished) {
             updateGameState(GameState.WaitingForPlayers);
             resetPlayers();
         }
     };
 
-    const handleRoomReset = (playerId: string) => {
+    const handleStartGame = (playerId: string) => {
         const player = playersById.get(playerId);
         const players = Array.from(playersById.values());
 
-        if (
-            player?.isRoomMaster &&
-            gameState === GameState.Finished &&
-            players.length > 2
-        ) {
+        if (player && player.isRoomMaster && players.length > 2) {
             launchGame();
         }
     };
 
-    const setPlayerOffline = (playerId: string) => {
+    const handleOfflineState = (playerId: string, offline: boolean) => {
         const player = playersById.get(playerId);
 
         if (player) {
             playersById.set(player.id, {
                 ...player,
-                offline: true
+                offline
             });
+
+            sendPlayers();
         }
     };
 
@@ -195,7 +187,7 @@ export const buildGame = (isPrivate: boolean) => {
         playersById = updatedPlayersById;
 
         updateGameState(GameState.DisplayScores);
-        nextStepTimer = setTimeout(endTurn, timeToAnswer);
+        sendPlayers();
 
         if (playersAlive > 2) {
             nextStepTimer = setTimeout(generateQuestion, timeToDisplayAnswers);
@@ -206,10 +198,18 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const electNewRoomMaster = () => {
-        const roomMaster = findNewRoomMaster(playersById);
-        if (roomMaster) {
-            playersById.set(roomMaster.id, {
-                ...roomMaster,
+        const { currentRoomMaster, newRoomMaster } = findNewRoomMaster(playersById);
+
+        if (currentRoomMaster) {
+            playersById.set(currentRoomMaster.id, {
+                ...currentRoomMaster,
+                isRoomMaster: false
+            });
+        } 
+
+        if (newRoomMaster) {
+            playersById.set(newRoomMaster.id, {
+                ...newRoomMaster,
                 isRoomMaster: true
             });
         }
@@ -229,7 +229,7 @@ export const buildGame = (isPrivate: boolean) => {
         handlePlayerAnswer,
         handleStartGame,
         handleRoomReset,
-        setPlayerOffline,
+        handleOfflineState,
         emitter,
         generator,
         isPrivate,

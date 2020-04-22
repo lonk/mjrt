@@ -2,17 +2,24 @@ import { Player } from '../../player';
 
 export const findNewRoomMaster = (playersById: Map<string, Player>) => {
     const players = Array.from(playersById.values());
-    let firstPlayerOnline: Player | null = null;
+    let firstAvailablePlayer: Player | null = null;
     let currentRoomMaster: Player | null = null;
     for (const player of players) {
-        if (!player.offline && !firstPlayerOnline) {
-            firstPlayerOnline = player;
+        if (!player.offline && !firstAvailablePlayer) {
+            firstAvailablePlayer = player;
         }
 
-        if (player.isRoomMaster && !player.offline) {
+        if (player.isRoomMaster) {
             currentRoomMaster = player;
         }
     }
 
-    return currentRoomMaster || firstPlayerOnline;
+    const newRoomMaster = currentRoomMaster && !currentRoomMaster.offline ?
+        currentRoomMaster :
+        firstAvailablePlayer;
+
+    return {
+        currentRoomMaster,
+        newRoomMaster
+    };
 };

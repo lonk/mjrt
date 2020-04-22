@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { io } from '../main';
 import { buildGame } from '../engine/game';
 import { GameState } from '../game';
-import { Player, reshapePlayer, ChosenAnswer } from '../player';
+import { reshapePlayer, ChosenAnswer } from '../player';
 
 export type Room = ReturnType<typeof buildRoom>;
 
@@ -28,13 +28,13 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         }
     });
 
-    game.emitter.on('players', (players: Player[]) => {
-        io.to(roomId).emit(
-            'players',
-            players.map(player =>
+    game.emitter.on('players', () => {
+        const { players } = game;
+        io.to(roomId).emit('players', {
+            players: players.map(player =>
                 reshapePlayer(player, socketsById.get(player.id)!)
             )
-        );
+        });
     });
 
     const isGameLocked = () =>
@@ -48,21 +48,23 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     ) => {
         const formerSocket = socketsById.get(playerId);
         if (formerSocket && formerSocket.connected) {
-            socket.emit('error', 'playerAlreadyConnected');
+            socket.emit('err', 'playerAlreadyConnected');
             return;
         }
 
         if (!formerSocket && isGameLocked()) {
-            socket.emit('error', 'roomLocked');
+            socket.emit('err', 'roomLocked');
             return;
-        }
-
-        if (!formerSocket) {
-            game.addPlayer(playerId, nickname);
         }
 
         socketsById.set(playerId, socket);
         socket.join(roomId);
+
+        if (!formerSocket) {
+            game.addPlayer(playerId, nickname);
+        } else {
+            game.handleOfflineState(playerId, false);
+        }
 
         attachListenersToSocket(playerId, socket);
     };
@@ -71,8 +73,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         playerId: string,
         socket: SocketIO.Socket
     ) => {
-        socket.on('disconnected', () => {
-            game.setPlayerOffline(playerId);
+        socket.on('disconnect', () => {
+            game.handleOfflineState(playerId, true);
             if (!isGameLocked()) {
                 socketsById.delete(playerId);
                 game.removePlayer(playerId);
@@ -86,10 +88,31 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         });
 
         socket.on('getState', () => {
-            const { players, gameState, generator } = game;
-            socket.emit('players', players);
-            socket.emit('gameState', { gameState, isPrivate });
-            socket.emit('question', generator.lastQuestion);
+            const {
+                players,
+                gameState,
+                duration,
+                stateStart,
+                generator
+            } = game;
+            const elapsedDuration = Date.now() - stateStart;
+            const remainingDuration = duration
+                ? duration - elapsedDuration
+                : null;
+            socket.emit('players', {
+                players: players.map(player =>
+                    reshapePlayer(player, socketsById.get(player.id)!)
+                )
+            });
+            socket.emit('gameState', {
+                gameState,
+                duration: remainingDuration,
+                isPrivate
+            });
+
+            if (generator.lastQuestion) {
+                socket.emit('currentQuestion', generator.lastQuestion);
+            }
         });
 
         socket.on('startGame', () => {
