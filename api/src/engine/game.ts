@@ -36,7 +36,6 @@ export const buildGame = (isPrivate: boolean) => {
 
     const removePlayer = (playerId: string) => {
         playersById.delete(playerId);
-        sendPlayers();
         electNewRoomMaster();
     };
 
@@ -86,21 +85,7 @@ export const buildGame = (isPrivate: boolean) => {
         nextStepTimer = setTimeout(generateQuestion, timeBeforeGameLaunch);
     };
 
-    const restorePlayers = () => {
-        const players = Array.from(playersById.values());
-
-        for (const player of players) {
-            playersById.set(player.id, {
-                ...player,
-                answer: null,
-                hiddenAnswer: null
-            });
-        }
-
-        sendPlayers();
-    };
-
-    const resetPlayers = () => {
+    const restorePlayers = (resetLives?: boolean) => {
         const players = Array.from(playersById.values());
 
         for (const player of players) {
@@ -108,7 +93,7 @@ export const buildGame = (isPrivate: boolean) => {
                 ...player,
                 answer: null,
                 hiddenAnswer: null,
-                lives: 3
+                lives: resetLives ? 3 : player.lives
             });
         }
 
@@ -144,7 +129,7 @@ export const buildGame = (isPrivate: boolean) => {
 
         if (player && player.isRoomMaster && gameState === GameState.Finished) {
             updateGameState(GameState.WaitingForPlayers);
-            resetPlayers();
+            restorePlayers(true);
         }
     };
 
@@ -198,14 +183,20 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const electNewRoomMaster = () => {
-        const { currentRoomMaster, newRoomMaster } = findNewRoomMaster(playersById);
+        if (!isPrivate) {
+            return sendPlayers();
+        }
+
+        const { currentRoomMaster, newRoomMaster } = findNewRoomMaster(
+            playersById
+        );
 
         if (currentRoomMaster) {
             playersById.set(currentRoomMaster.id, {
                 ...currentRoomMaster,
                 isRoomMaster: false
             });
-        } 
+        }
 
         if (newRoomMaster) {
             playersById.set(newRoomMaster.id, {

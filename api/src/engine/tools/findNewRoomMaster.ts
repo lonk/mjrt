@@ -14,9 +14,10 @@ export const findNewRoomMaster = (playersById: Map<string, Player>) => {
         }
     }
 
-    const newRoomMaster = currentRoomMaster && !currentRoomMaster.offline ?
-        currentRoomMaster :
-        firstAvailablePlayer;
+    const newRoomMaster =
+        currentRoomMaster && !currentRoomMaster.offline
+            ? currentRoomMaster
+            : firstAvailablePlayer;
 
     return {
         currentRoomMaster,

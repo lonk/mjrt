@@ -6,6 +6,7 @@ export const computeMissingVotes = (playersById: Map<string, Player>) => {
     return players.reduce(
         (acc, player) =>
             player.answer === ChosenAnswer.Answered ||
+            player.offline ||
             player.lives === 0
                 ? acc - 1
                 : acc,
