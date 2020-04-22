@@ -36,7 +36,7 @@ export default function LoginForm({ allowPrivateCreation, onSubmit }: Props) {
                 />
             </div>
 
-            {!Boolean(allowPrivateCreation) && (
+            {Boolean(allowPrivateCreation) && (
                 <div className={styles.privateBox}>
                     <input
                         type="checkbox"

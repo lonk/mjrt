@@ -61,7 +61,7 @@ export default function Login() {
             Combien de tours survivrez-vous ?
             <LoginForm
                 onSubmit={handleSubmit}
-                allowPrivateCreation={Boolean(id)}
+                allowPrivateCreation={!Boolean(id)}
             />
         </LoggedOut>
     );

@@ -1,25 +1,27 @@
 import React from 'react';
-import './Answer.css';
+import styles from  './Answer.module.css';
 
 export default function Answer(props: any) {
-    let classNames = 'answer';
+    const classToApply = [styles.answer];
     switch (props.letter) {
         case 'A':
-            classNames = 'answer a';
+            classToApply.push(styles.a);
             break;
         case 'B':
-            classNames = 'answer b';
+            classToApply.push(styles.b);
             break;
         case 'C':
-            classNames = 'answer c';
+            classToApply.push(styles.c);
             break;
         default:
-            classNames = 'answer';
+            // do nothing
     }
 
     if (props.selected) {
-        classNames += ' selected';
+        classToApply.push(styles.selected);
     }
+
+    const classNames = classToApply.join(' ');
 
     return (
         <button
@@ -27,10 +29,10 @@ export default function Answer(props: any) {
             disabled={props.disabled}
             onClick={props.onClick}
         >
-            <div className="answer-letter">{props.letter}</div>
-            <div className="answer-content">{props.answer}</div>
+            <div className={styles.letter}>{props.letter}</div>
+            <div className={styles.content}>{props.answer}</div>
             {props.score !== null && (
-                <div className="answer-score">{props.score}</div>
+                <div className={styles.score}>{props.score}</div>
             )}
         </button>
     );

@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 
-.motion-twin {
+.motionTwin {
   max-height: 50px;
   margin-top: auto;
   color: #fafafa;
@@ -13,6 +13,6 @@
   text-align: center;
 }
 
-.motion-twin > a {
+.motionTwin > a {
   color: #fafafa;
 }
