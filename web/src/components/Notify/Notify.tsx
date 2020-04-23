@@ -14,14 +14,15 @@ export default function Notify({ notify }: Props) {
     const audio = new Audio('/notify.mp3');
 
     useEffect(() => {
-        // Will force re-render due to the previous setNotificationShown === false
-        setNotificationShown(true);
-    });
-
-    useEffect(() => {
         registerSw();
         audio.load();
     }, []);
+
+    useEffect(() => {
+        if (!notificationShown) {
+            setNotificationShown(true);
+        }
+    }, [notificationShown]);
 
     useEffect(() => {
         if (notify) {
