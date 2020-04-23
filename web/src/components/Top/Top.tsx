@@ -8,25 +8,25 @@ import styles from './Top.module.css';
 interface Props {
     serverState: ServerState;
     children: React.ReactNode;
-    countdown: number;
+    countdown: number | null;
 }
 
 export default function Top({ children, serverState, countdown }: Props) {
     return (
         <div className={styles.top}>
+            <AudioManager serverState={serverState} />
             <div className={styles.logo}>
                 <img src="/logo.png" alt="MJRT" width="150" />
                 <div className={styles.icons}>
                     <a href="https://twitter.com/MjrtNet">
-                        <FaTwitter className={styles.icon} />
+                        <FaTwitter />
                     </a>
                     <a href="https://discord.gg/wqMxG4s">
-                        <FaDiscord className={styles.icon} />
+                        <FaDiscord />
                     </a>
                 </div>
             </div>
             <div className={styles.content}>
-                <AudioManager serverState={serverState} />
                 {children}
 
                 {countdown !== null && (

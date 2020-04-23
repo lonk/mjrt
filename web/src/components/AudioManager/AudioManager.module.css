@@ -1,0 +1,24 @@
+.audioManager {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #5a7d7c;
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (max-width: 800px) {
+    .audioManager {
+        font-size: 20px;
+        top: 5px;
+        right: 5px;
+    }
+}
+
+.audioManager:hover {
+    color: #cca403;
+}

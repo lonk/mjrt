@@ -17,7 +17,7 @@ import {
 import styles from './Engine.module.css';
 
 export default function Engine() {
-    const [countdown, setCountdown] = useState<number | null>();
+    const [countdown, setCountdown] = useState<number | null>(null);
     const [serverState, setServerState] = useState<ServerState>({
         gameState: GameState.WaitingForPlayers,
         isPrivate: false,
@@ -88,7 +88,7 @@ export default function Engine() {
 
     return (
         <div className={styles.engine}>
-            <Top countdown={countdown}>
+            <Top countdown={countdown} serverState={serverState}>
                 {serverState.gameState === GameState.WaitingForPlayers && (
                     <WaitingForPlayers
                         serverState={serverState}

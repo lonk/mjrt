@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import { GameState, ServerState } from '../../server/types';
+import { serverClient } from '../../server';
+import styles from './AudioManager.module.css';
 
 interface Props {
     serverState: ServerState;
@@ -35,5 +38,13 @@ export function AudioManager({ serverState }: Props) {
         }
     }, [serverState.gameState]);
 
-    return <div></div>;
+    return (
+        <button
+            className={styles.audioManager}
+            onClick={() => setAudioActivated(!audioActivated)}
+        >
+            {audioActivated && <FaVolumeUp />}
+            {!audioActivated && <FaVolumeMute />}
+        </button>
+    );
 }
