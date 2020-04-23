@@ -24,6 +24,7 @@ export const buildGame = (isPrivate: boolean) => {
     let duration: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
     let round: number = 0;
+    let lastWinningAnswers: ChosenAnswer[] = [];
 
     const addPlayer = (playerId: string, nickname: string) => {
         const isRoomMaster =
@@ -169,10 +170,11 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const endTurn = () => {
-        const { updatedPlayersById, playersAlive } = computePlayersAlive(
+        const { updatedPlayersById, playersAlive, winningAnswers } = computePlayersAlive(
             playersById
         );
         playersById = updatedPlayersById;
+        lastWinningAnswers = winningAnswers;
 
         updateGameState(GameState.DisplayScores);
         sendPlayers();
@@ -241,6 +243,9 @@ export const buildGame = (isPrivate: boolean) => {
         },
         get round() {
             return round;
+        },
+        get lastWinningAnswers() {
+            return lastWinningAnswers;
         }
     };
 };

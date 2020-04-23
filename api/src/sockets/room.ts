@@ -23,12 +23,13 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     });
 
     game.emitter.on('gameState', () => {
-        const { gameState, duration, round } = game;
+        const { gameState, duration, round, lastWinningAnswers } = game;
         io.to(roomId).emit('gameState', {
             gameState,
             duration,
             round,
-            isPrivate
+            isPrivate,
+            lastWinningAnswers
         });
 
         if (gameState === GameState.WaitingForPlayers) {
@@ -114,7 +115,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
                 duration,
                 stateStart,
                 generator,
-                round
+                round,
+                lastWinningAnswers
             } = game;
             const elapsedDuration = Date.now() - stateStart;
             const remainingDuration = duration
@@ -129,7 +131,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
                 gameState,
                 duration: remainingDuration,
                 isPrivate,
-                round
+                round,
+                lastWinningAnswers
             });
 
             if (generator.lastQuestion) {

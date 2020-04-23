@@ -7,7 +7,9 @@ export const monitor = (req: Request, res: Response) => {
         gameState: room.game.gameState,
         stateStart: room.game.stateStart,
         duration: room.game.duration,
+        round: room.game.round,
         lastQuestion: room.game.generator.lastQuestion,
+        lastWinningAnswers: room.game.lastWinningAnswers,
         isPrivate: room.game.isPrivate,
         players: room.game.players.map(player => ({
             id: player.id,
