@@ -1,9 +1,17 @@
 import React from 'react';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import Countdown from 'react-countdown';
+import { AudioManager } from '../AudioManager/AudioManager';
+import { ServerState } from '../../server/types';
 import styles from './Top.module.css';
 
-export default function Top(props: any) {
+interface Props {
+    serverState: ServerState;
+    children: React.ReactNode;
+    countdown: number;
+}
+
+export default function Top({ children, serverState, countdown }: Props) {
     return (
         <div className={styles.top}>
             <div className={styles.logo}>
@@ -18,14 +26,15 @@ export default function Top(props: any) {
                 </div>
             </div>
             <div className={styles.content}>
-                {props.children}
+                <AudioManager serverState={serverState} />
+                {children}
 
-                {props.countdown !== null && (
+                {countdown !== null && (
                     <div className={styles.countdown}>
                         <strong>Temps restant :</strong>{' '}
                         <Countdown
-                            date={props.countdown}
-                            key={props.countdown}
+                            date={countdown}
+                            key={countdown}
                             renderer={({ seconds }) =>
                                 seconds > 1
                                     ? `${seconds} secondes`

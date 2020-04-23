@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Notification from 'react-web-notification';
+import { GameState } from '../../server/types';
 
 interface Props {
-    notify: boolean;
+    gameState: GameState;
 }
 
-export default function Notify({ notify }: Props) {
+export default function Notify({ gameState }: Props) {
     const [isGranted, setIsGranted] = useState(false);
     const [notificationShown, setNotificationShown] = useState(true);
     const [registration, setRegistration] = useState<
         ServiceWorkerRegistration
     >();
-    const audio = new Audio('/notify.mp3');
 
     useEffect(() => {
         registerSw();
-        audio.load();
     }, []);
 
     useEffect(() => {
@@ -25,11 +24,10 @@ export default function Notify({ notify }: Props) {
     }, [notificationShown]);
 
     useEffect(() => {
-        if (notify) {
+        if (gameState === GameState.AboutToStart) {
             setNotificationShown(false);
-            audio.play();
         }
-    }, [notify]);
+    }, [gameState]);
 
     const registerSw = async () => {
         const navigatorRegistration = await navigator.serviceWorker.register(

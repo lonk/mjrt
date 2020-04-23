@@ -116,7 +116,7 @@ export default function Engine() {
                     ))}
                 </div>
             </div>
-            <Notify notify={serverState.gameState === GameState.AboutToStart} />
+            <Notify gameState={serverState.gameState} />
         </div>
     );
 }
