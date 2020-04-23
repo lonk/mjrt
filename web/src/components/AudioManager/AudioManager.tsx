@@ -1,19 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
-import { GameState, ServerState } from '../../server/types';
-import { serverClient } from '../../server';
+import { GameState, ServerState, ChosenAnswer } from '../../server/types';
 import styles from './AudioManager.module.css';
 
 interface Props {
     serverState: ServerState;
+    chosenAnswer: ChosenAnswer | null;
 }
 
 const audio = new Audio('/notify.mp3');
 const success = new Audio('/success.mp3');
 const failure = new Audio('/failure.mp3');
 
-export function AudioManager({ serverState }: Props) {
+export function AudioManager({ serverState, chosenAnswer }: Props) {
     const [audioActivated, setAudioActivated] = useState(true);
+
+    const doesPlayerWon = () => {
+        return (
+            chosenAnswer !== null &&
+            serverState.lastWinningAnswers.indexOf(chosenAnswer) > -1
+        );
+    };
 
     useEffect(() => {
         audio.load();
@@ -31,7 +38,8 @@ export function AudioManager({ serverState }: Props) {
                 audio.play();
                 break;
             case GameState.DisplayScores:
-                success.play();
+                if (doesPlayerWon()) success.play();
+                else failure.play();
                 break;
             default:
             // do nothing

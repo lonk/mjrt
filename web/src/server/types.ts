@@ -28,6 +28,7 @@ export type GameStateMessage = {
     duration: number | null;
     isPrivate: boolean;
     round: number;
+    lastWinningAnswers: ChosenAnswer[];
 };
 
 export type CurrentQuestionMessage = {
@@ -70,4 +71,5 @@ export interface ServerState {
     answers: string[];
     players: Player[];
     round: number;
+    lastWinningAnswers: ChosenAnswer[];
 }

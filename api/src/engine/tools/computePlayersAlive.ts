@@ -58,6 +58,7 @@ export const computePlayersAlive = (playersById: Map<string, Player>) => {
 
     return {
         updatedPlayersById,
+        winningAnswers,
         playersAlive
     };
 };

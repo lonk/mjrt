@@ -2,19 +2,25 @@ import React from 'react';
 import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import Countdown from 'react-countdown';
 import { AudioManager } from '../AudioManager/AudioManager';
-import { ServerState } from '../../server/types';
+import { ServerState, ChosenAnswer } from '../../server/types';
 import styles from './Top.module.css';
 
 interface Props {
     serverState: ServerState;
     children: React.ReactNode;
     countdown: number | null;
+    chosenAnswer: ChosenAnswer | null;
 }
 
-export default function Top({ children, serverState, countdown }: Props) {
+export default function Top({
+    children,
+    serverState,
+    countdown,
+    chosenAnswer
+}: Props) {
     return (
         <div className={styles.top}>
-            <AudioManager serverState={serverState} />
+            <AudioManager serverState={serverState} chosenAnswer={chosenAnswer} />
             <div className={styles.logo}>
                 <img src="/logo.png" alt="MJRT" width="150" />
                 <div className={styles.icons}>

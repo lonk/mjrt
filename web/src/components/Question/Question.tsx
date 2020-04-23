@@ -6,15 +6,18 @@ import styles from './Question.module.css';
 
 interface Props {
     serverState: ServerState;
-    onSelected: (answer: ChosenAnswer) => void;
+    chosenAnswer: ChosenAnswer | null;
+    onSelected: (answer: ChosenAnswer | null) => void;
 }
 
-export default function Question({ serverState, onSelected }: Props) {
-    const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>();
-
+export default function Question({
+    serverState,
+    onSelected,
+    chosenAnswer
+}: Props) {
     useEffect(() => {
         if (serverState.gameState === GameState.WaitingForAnswers) {
-            setChosenAnswer(null);
+            onSelected(null);
         }
     }, [serverState.gameState]);
 
@@ -23,7 +26,6 @@ export default function Question({ serverState, onSelected }: Props) {
             return;
         }
 
-        setChosenAnswer(answer);
         onSelected(answer);
     };
 

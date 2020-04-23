@@ -18,13 +18,15 @@ import styles from './Engine.module.css';
 
 export default function Engine() {
     const [countdown, setCountdown] = useState<number | null>(null);
+    const [chosenAnswer, setChosenAnswer] = useState<ChosenAnswer | null>(null);
     const [serverState, setServerState] = useState<ServerState>({
         gameState: GameState.WaitingForPlayers,
         isPrivate: false,
         question: null,
         answers: [],
         players: [],
-        round: 0
+        round: 0,
+        lastWinningAnswers: []
     });
 
     const updateServerState = (updatedFields: Partial<ServerState>) =>
@@ -36,8 +38,19 @@ export default function Engine() {
     useEffect(() => {
         serverClient.on(
             'gameState',
-            ({ gameState, duration, round, isPrivate }: GameStateMessage) => {
-                updateServerState({ gameState, round, isPrivate });
+            ({
+                gameState,
+                duration,
+                round,
+                isPrivate,
+                lastWinningAnswers
+            }: GameStateMessage) => {
+                updateServerState({
+                    gameState,
+                    round,
+                    isPrivate,
+                    lastWinningAnswers
+                });
                 setCountdown(duration ? Date.now() + duration : null);
             }
         );
@@ -62,8 +75,9 @@ export default function Engine() {
         };
     }, []);
 
-    const voteAnswer = (vote: ChosenAnswer) => {
-        serverClient.emit('vote', { vote });
+    const voteAnswer = (vote: ChosenAnswer | null) => {
+        setChosenAnswer(vote);
+        if (vote !== null) serverClient.emit('vote', { vote });
     };
 
     const startGame = () => {
@@ -88,7 +102,7 @@ export default function Engine() {
 
     return (
         <div className={styles.engine}>
-            <Top countdown={countdown} serverState={serverState}>
+            <Top countdown={countdown} serverState={serverState} chosenAnswer={chosenAnswer}>
                 {serverState.gameState === GameState.WaitingForPlayers && (
                     <WaitingForPlayers
                         serverState={serverState}
@@ -106,6 +120,7 @@ export default function Engine() {
                     <Question
                         serverState={serverState}
                         onSelected={voteAnswer}
+                        chosenAnswer={chosenAnswer}
                     />
                 )}
             </Top>
