@@ -24,7 +24,7 @@ app.use('/', express.static('../web/build'));
 
 app.get('/monitor', login, monitor);
 
-app.get('/metrics', (_, res) => {
+app.get('/metrics', login, (_, res) => {
     res.end(register.metrics());
 });
 
