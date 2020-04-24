@@ -35,6 +35,7 @@ export function AudioManager({ serverState, chosenAnswer }: Props) {
 
         switch (serverState.gameState) {
             case GameState.AboutToStart:
+            case GameState.WaitingForAnswers:
                 audio.play();
                 break;
             case GameState.DisplayScores:
