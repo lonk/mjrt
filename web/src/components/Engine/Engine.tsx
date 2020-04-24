@@ -58,7 +58,7 @@ export default function Engine() {
         serverClient.on(
             'currentQuestion',
             ({ question, answers }: CurrentQuestionMessage) => {
-                let randomAnswers = [
+                const randomAnswers = [
                     {label: answers[0], type: ChosenAnswer.A},
                     {label: answers[1], type: ChosenAnswer.B},
                     {label: answers[2], type: ChosenAnswer.C}

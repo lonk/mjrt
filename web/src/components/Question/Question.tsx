@@ -50,6 +50,9 @@ export default function Question({
             .length;
     };
 
+    const letters = ["A", "B", "C"];
+    let numberLetter = 0;
+
     return (
         <div className={styles.question}>
             <div className={styles.round}>Question {serverState.round}</div>
@@ -57,7 +60,7 @@ export default function Question({
             <div className={styles.answers}>
                 {serverState.answers.map(answer => (
                     <Answer
-                        letter={ChosenAnswer[answer.type]}
+                        letter={letters[numberLetter++]}
                         answer={answer.label}
                         score={computeScore(answer.type)}
                         selected={chosenAnswer === answer.type}
