@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { nbRooms, nbOnlinePlayers, nbSockets } from '../metrics';
 import { io } from '../main';
 import { buildGame } from '../engine/game';
 import { GameState } from '../game';
@@ -17,6 +18,7 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     const socketsById: Map<string, SocketIO.Socket> = new Map();
     const emitter = new EventEmitter();
     const game = buildGame(isPrivate);
+    nbRooms.labels(isPrivate ? 'private' : 'public').inc();
 
     game.emitter.on('question', () => {
         io.to(roomId).emit('currentQuestion', game.generator.lastQuestion);
@@ -83,10 +85,12 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
 
         if (!formerSocket) {
             game.addPlayer(playerId, nickname);
+            nbSockets.labels(roomId).inc(1);
         } else {
             game.handleOfflineState(playerId, false);
         }
 
+        nbOnlinePlayers.labels(roomId).inc();
         attachListenersToSocket(playerId, socket);
     };
 
@@ -95,10 +99,12 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         socket: SocketIO.Socket
     ) => {
         socket.on('disconnect', () => {
+            nbOnlinePlayers.labels(roomId).dec();
             game.handleOfflineState(playerId, true);
             if (!isGameLocked()) {
                 socketsById.delete(playerId);
                 game.removePlayer(playerId);
+                nbSockets.labels(roomId).dec();
             }
 
             checkIfRoomToDestroy();
@@ -168,6 +174,9 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
             (game.gameState === GameState.WaitingForPlayers ||
                 game.gameState === GameState.Finished)
         ) {
+            nbRooms.labels(isPrivate ? 'private' : 'public').dec();
+            nbSockets.labels(roomId).set(0);
+            nbOnlinePlayers.labels(roomId).set(0);
             emitter.emit('destroy');
         }
     };
