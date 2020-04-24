@@ -14,6 +14,11 @@ export enum ChosenAnswer {
     Answered
 }
 
+export type NumberedAnswer = {
+    label: string;
+    type: ChosenAnswer;
+};
+
 export type Player = {
     sessionId: string;
     nickname: string;
@@ -68,7 +73,7 @@ export interface ServerState {
     gameState: GameState;
     isPrivate: boolean;
     question: string | null;
-    answers: string[];
+    answers: NumberedAnswer[];
     players: Player[];
     round: number;
     lastWinningAnswers: ChosenAnswer[];
