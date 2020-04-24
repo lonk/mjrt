@@ -165,7 +165,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
 
         if (
             sockets.filter(socket => socket.connected).length === 0 &&
-            !isGameLocked()
+            (game.gameState === GameState.WaitingForPlayers ||
+                game.gameState === GameState.Finished)
         ) {
             emitter.emit('destroy');
         }
