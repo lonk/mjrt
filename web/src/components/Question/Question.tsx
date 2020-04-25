@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Answer from '../Answer/Answer';
 import { serverClient } from '../../server';
 import { GameState, ChosenAnswer, ServerState } from '../../server/types';
@@ -50,17 +50,16 @@ export default function Question({
             .length;
     };
 
-    const letters = ["A", "B", "C"];
-    let numberLetter = 0;
+    const letters = ['A', 'B', 'C'];
 
     return (
         <div className={styles.question}>
             <div className={styles.round}>Question {serverState.round}</div>
             <div className={styles.questionText}>{serverState.question}</div>
             <div className={styles.answers}>
-                {serverState.answers.map(answer => (
+                {serverState.answers.map((answer, index) => (
                     <Answer
-                        letter={letters[numberLetter++]}
+                        letter={letters[index]}
                         answer={answer.label}
                         score={computeScore(answer.type)}
                         selected={chosenAnswer === answer.type}

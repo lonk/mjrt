@@ -14,6 +14,7 @@ import {
     PlayersMessage,
     ServerState
 } from '../../server/types';
+import { randomizeAnswers } from './randomizeAnswers';
 import styles from './Engine.module.css';
 
 export default function Engine() {
@@ -58,19 +59,7 @@ export default function Engine() {
         serverClient.on(
             'currentQuestion',
             ({ question, answers }: CurrentQuestionMessage) => {
-                const randomAnswers = [
-                    {label: answers[0], type: ChosenAnswer.A},
-                    {label: answers[1], type: ChosenAnswer.B},
-                    {label: answers[2], type: ChosenAnswer.C}
-                ];
-
-                // shuffling answers order
-                for (let i = randomAnswers.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    const x = randomAnswers[i];
-                    randomAnswers[i] = randomAnswers[j];
-                    randomAnswers[j] = x;
-                }
+                const randomAnswers = randomizeAnswers(answers);
 
                 updateServerState({ question, answers: randomAnswers });
             }
