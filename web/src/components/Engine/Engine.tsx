@@ -105,7 +105,11 @@ export default function Engine() {
 
     return (
         <div className={styles.engine}>
-            <Top countdown={countdown} serverState={serverState} chosenAnswer={chosenAnswer}>
+            <Top
+                countdown={countdown}
+                serverState={serverState}
+                chosenAnswer={chosenAnswer}
+            >
                 {serverState.gameState === GameState.WaitingForPlayers && (
                     <WaitingForPlayers
                         serverState={serverState}
@@ -130,7 +134,11 @@ export default function Engine() {
             <div className={styles.players}>
                 <div className={styles.playersContainer}>
                     {serverState.players.map(player => (
-                        <PlayerBox key={player.sessionId} player={player} />
+                        <PlayerBox
+                            key={player.sessionId}
+                            player={player}
+                            serverState={serverState}
+                        />
                     ))}
                 </div>
             </div>

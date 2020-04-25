@@ -1,56 +1,58 @@
 import React from 'react';
 import { FaHeart, FaCrown } from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
-import { Player, ChosenAnswer } from '../../server/types';
+import { Player, ChosenAnswer, ServerState } from '../../server/types';
 import styles from './PlayerBox.module.css';
 
 interface Props {
     player: Player;
+    serverState: ServerState;
 }
 
-export default function PlayerBox(props: Props) {
+export default function PlayerBox({ player, serverState }: Props) {
     const classToApply = [styles.player];
-    switch (props.player.answer) {
-        case ChosenAnswer.A:
+    const answerIndex = serverState.answers.findIndex(
+        answer => player.answer === answer.type
+    );
+
+    switch (answerIndex) {
+        case 0:
             classToApply.push(styles.a);
             break;
-        case ChosenAnswer.B:
+        case 1:
             classToApply.push(styles.b);
             break;
-        case ChosenAnswer.C:
+        case 2:
             classToApply.push(styles.c);
             break;
-        case ChosenAnswer.Answered:
-            classToApply.push(styles.answered);
+        case -1:
+            if (player.answer === ChosenAnswer.Answered)
+                classToApply.push(styles.answered);
+            else if (player.lives === 0) classToApply.push(styles.dead);
             break;
         default:
-            if (props.player.lives === 0) {
-                classToApply.push(styles.dead);
-            }
+        // do nothing
     }
 
     const classNames = classToApply.join(' ');
     const lives: JSX.Element[] = [];
 
-    for (let i = 0; i < props.player.lives; i++) {
+    for (let i = 0; i < player.lives; i++) {
         lives.push(
-            <FaHeart
-                key={`${props.player.sessionId}_${i}`}
-                className={styles.live}
-            />
+            <FaHeart key={`${player.sessionId}_${i}`} className={styles.live} />
         );
     }
 
     return (
         <div className={classNames}>
-            <div className={styles.nickname}>{props.player.nickname}</div>
+            <div className={styles.nickname}>{player.nickname}</div>
             <div className={styles.icons}>
-                {props.player.isRoomMaster && (
+                {player.isRoomMaster && (
                     <div className={styles.master}>
                         <FaCrown />
                     </div>
                 )}
-                {props.player.offline && (
+                {player.offline && (
                     <div className={styles.offline}>
                         <FiWifiOff />
                     </div>
