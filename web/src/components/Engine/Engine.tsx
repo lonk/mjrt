@@ -14,6 +14,7 @@ import {
     PlayersMessage,
     ServerState
 } from '../../server/types';
+import { randomizeAnswers } from './randomizeAnswers';
 import styles from './Engine.module.css';
 
 export default function Engine() {
@@ -58,7 +59,9 @@ export default function Engine() {
         serverClient.on(
             'currentQuestion',
             ({ question, answers }: CurrentQuestionMessage) => {
-                updateServerState({ question, answers });
+                const randomAnswers = randomizeAnswers(answers);
+
+                updateServerState({ question, answers: randomAnswers });
             }
         );
 
@@ -102,7 +105,11 @@ export default function Engine() {
 
     return (
         <div className={styles.engine}>
-            <Top countdown={countdown} serverState={serverState} chosenAnswer={chosenAnswer}>
+            <Top
+                countdown={countdown}
+                serverState={serverState}
+                chosenAnswer={chosenAnswer}
+            >
                 {serverState.gameState === GameState.WaitingForPlayers && (
                     <WaitingForPlayers
                         serverState={serverState}
@@ -127,7 +134,11 @@ export default function Engine() {
             <div className={styles.players}>
                 <div className={styles.playersContainer}>
                     {serverState.players.map(player => (
-                        <PlayerBox key={player.sessionId} player={player} />
+                        <PlayerBox
+                            key={player.sessionId}
+                            player={player}
+                            serverState={serverState}
+                        />
                     ))}
                 </div>
             </div>

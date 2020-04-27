@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Answer from '../Answer/Answer';
 import { serverClient } from '../../server';
 import { GameState, ChosenAnswer, ServerState } from '../../server/types';
@@ -50,35 +50,23 @@ export default function Question({
             .length;
     };
 
+    const letters = ['A', 'B', 'C'];
+
     return (
         <div className={styles.question}>
             <div className={styles.round}>Question {serverState.round}</div>
             <div className={styles.questionText}>{serverState.question}</div>
             <div className={styles.answers}>
-                <Answer
-                    letter="A"
-                    answer={serverState.answers[0]}
-                    score={computeScore(ChosenAnswer.A)}
-                    selected={chosenAnswer === ChosenAnswer.A}
-                    disabled={!canPlayerAnswer()}
-                    onClick={() => selectAnswer(ChosenAnswer.A)}
-                />
-                <Answer
-                    letter="B"
-                    answer={serverState.answers[1]}
-                    score={computeScore(ChosenAnswer.B)}
-                    selected={chosenAnswer === ChosenAnswer.B}
-                    disabled={!canPlayerAnswer()}
-                    onClick={() => selectAnswer(ChosenAnswer.B)}
-                />
-                <Answer
-                    letter="C"
-                    answer={serverState.answers[2]}
-                    score={computeScore(ChosenAnswer.C)}
-                    selected={chosenAnswer === ChosenAnswer.C}
-                    disabled={!canPlayerAnswer()}
-                    onClick={() => selectAnswer(ChosenAnswer.C)}
-                />
+                {serverState.answers.map((answer, index) => (
+                    <Answer
+                        letter={letters[index]}
+                        answer={answer.label}
+                        score={computeScore(answer.type)}
+                        selected={chosenAnswer === answer.type}
+                        disabled={!canPlayerAnswer()}
+                        onClick={() => selectAnswer(answer.type)}
+                    />
+                ))}
             </div>
         </div>
     );
