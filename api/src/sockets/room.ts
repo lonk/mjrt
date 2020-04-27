@@ -175,8 +175,8 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
                 game.gameState === GameState.Finished)
         ) {
             nbRooms.labels(isPrivate ? 'private' : 'public').dec();
-            nbSockets.labels(roomId).set(0);
-            nbOnlinePlayers.labels(roomId).set(0);
+            nbSockets.remove(roomId);
+            nbOnlinePlayers.remove(roomId);
             emitter.emit('destroy');
         }
     };
