@@ -69,7 +69,7 @@ export default function Play() {
                 )}
                 {socketState === SocketState.Disconnected && (
                     <span>
-                        La connection au serveur a été perdue.
+                        La connexion au serveur a été perdue.
                         <br />
                         Tentative de reconnexion en cours...
                     </span>
