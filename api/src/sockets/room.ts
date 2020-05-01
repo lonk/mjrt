@@ -3,7 +3,7 @@ import { nbRooms, nbOnlinePlayers, nbSockets } from '../metrics';
 import { io } from '../main';
 import { buildGame } from '../engine/game';
 import { GameState } from '../game';
-import { reshapePlayer, ChosenAnswer } from '../player';
+import { reshapePlayer, ChosenAnswer, PlayerEmote } from '../player';
 
 export type Room = ReturnType<typeof buildRoom>;
 
@@ -112,6 +112,10 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
 
         socket.on('vote', ({ vote }: { vote: ChosenAnswer }) => {
             game.handlePlayerAnswer(playerId, vote);
+        });
+
+        socket.on('emote', ({ emote }: { emote: PlayerEmote }) => {
+            game.handlePlayerEmote(playerId, emote);
         });
 
         socket.on('getState', () => {

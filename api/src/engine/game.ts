@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Player, buildPlayer, ChosenAnswer } from '../player';
+import { Player, buildPlayer, ChosenAnswer, PlayerEmote } from '../player';
 import { GameState } from '../game';
 import { buildQuestionGenerator } from './questions';
 import { computePlayersAlive } from './tools/computePlayersAlive';
@@ -94,6 +94,7 @@ export const buildGame = (isPrivate: boolean) => {
         for (const player of players) {
             playersById.set(player.id, {
                 ...player,
+                emote: null,
                 answer: null,
                 hiddenAnswer: null,
                 lives: resetLives ? 3 : player.lives
@@ -125,6 +126,28 @@ export const buildGame = (isPrivate: boolean) => {
             clearTimeout(nextStepTimer);
             endTurn();
         }
+    };
+
+    const handlePlayerEmote = (playerId: string, emote: PlayerEmote) => {
+        const player = playersById.get(playerId);
+
+        if (
+            !player ||
+            (player.emote &&
+                !(
+                    gameState === GameState.WaitingForAnswers ||
+                    gameState === GameState.DisplayScores
+                ))
+        ) {
+            return;
+        }
+
+        playersById.set(playerId, {
+            ...player,
+            emote
+        });
+
+        sendPlayers();
     };
 
     const handleRoomReset = (playerId: string) => {
@@ -170,9 +193,11 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const endTurn = () => {
-        const { updatedPlayersById, playersAlive, winningAnswers } = computePlayersAlive(
-            playersById
-        );
+        const {
+            updatedPlayersById,
+            playersAlive,
+            winningAnswers
+        } = computePlayersAlive(playersById);
         playersById = updatedPlayersById;
         lastWinningAnswers = winningAnswers;
 
@@ -224,6 +249,7 @@ export const buildGame = (isPrivate: boolean) => {
         removePlayer,
         handlePlayerAnswer,
         handleStartGame,
+        handlePlayerEmote,
         handleRoomReset,
         handleOfflineState,
         emitter,
