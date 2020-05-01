@@ -133,11 +133,10 @@ export const buildGame = (isPrivate: boolean) => {
 
         if (
             !player ||
-            (player.emote &&
-                !(
-                    gameState === GameState.WaitingForAnswers ||
-                    gameState === GameState.DisplayScores
-                ))
+            !(
+                gameState === GameState.WaitingForAnswers ||
+                gameState === GameState.DisplayScores
+            )
         ) {
             return;
         }

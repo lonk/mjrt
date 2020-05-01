@@ -1,0 +1,24 @@
+.emotes {
+    background: #006626;
+    text-align: center;
+}
+
+.emotes > button {
+    background: transparent;
+    border: 0;
+    height: 22px;
+    width: 22px;
+    padding: 0px;
+    margin: 10px 7px;
+    cursor: pointer;
+    color: #FAFAFA;
+    font-size: 22px;
+}
+
+.selected {
+    color: #CCA403 !important;
+}
+
+.emotes > button[disabled] {
+    cursor: default;
+}
