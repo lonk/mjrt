@@ -142,6 +142,7 @@ export default function Engine() {
                 <Emotes
                     onSelected={selectEmote}
                     gameState={serverState.gameState}
+                    chosenAnswer={chosenAnswer}
                 />
             )}
             <div className={styles.players}>

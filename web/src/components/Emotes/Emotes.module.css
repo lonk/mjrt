@@ -14,11 +14,3 @@
     color: #FAFAFA;
     font-size: 22px;
 }
-
-.selected {
-    color: #CCA403 !important;
-}
-
-.emotes > button[disabled] {
-    cursor: default;
-}
