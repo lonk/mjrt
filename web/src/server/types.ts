@@ -14,6 +14,13 @@ export enum ChosenAnswer {
     Answered
 }
 
+export enum PlayerEmote {
+    Laugh,
+    Smile,
+    Sad,
+    Tears
+}
+
 export type NumberedAnswer = {
     label: string;
     type: ChosenAnswer;
@@ -24,6 +31,7 @@ export type Player = {
     nickname: string;
     answer: ChosenAnswer | null;
     lives: number;
+    emote: PlayerEmote | null;
     offline: boolean;
     isRoomMaster: boolean;
 };

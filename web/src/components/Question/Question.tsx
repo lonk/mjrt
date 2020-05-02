@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import Answer from '../Answer/Answer';
 import { serverClient } from '../../server';
-import { GameState, ChosenAnswer, ServerState } from '../../server/types';
+import { GameState, ChosenAnswer, ServerState, PlayerEmote } from '../../server/types';
+import Emotes from '../Emotes/Emotes';
 import styles from './Question.module.css';
 
 interface Props {
@@ -61,6 +62,7 @@ export default function Question({
                     <Answer
                         letter={letters[index]}
                         answer={answer.label}
+                        key={index}
                         score={computeScore(answer.type)}
                         selected={chosenAnswer === answer.type}
                         disabled={!canPlayerAnswer()}

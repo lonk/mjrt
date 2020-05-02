@@ -1,7 +1,19 @@
 import React from 'react';
-import { FaHeart, FaCrown } from 'react-icons/fa';
+import {
+    FaHeart,
+    FaCrown,
+    FaLaughSquint,
+    FaSadTear,
+    FaSadCry,
+    FaSmile
+} from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
-import { Player, ChosenAnswer, ServerState } from '../../server/types';
+import {
+    Player,
+    ChosenAnswer,
+    ServerState,
+    PlayerEmote
+} from '../../server/types';
 import styles from './PlayerBox.module.css';
 
 interface Props {
@@ -43,11 +55,32 @@ export default function PlayerBox({ player, serverState }: Props) {
         );
     }
 
+    let emote: JSX.Element | null;
+    switch (player.emote) {
+        case PlayerEmote.Laugh:
+            emote = <FaLaughSquint />;
+            break;
+        case PlayerEmote.Sad:
+            emote = <FaSadTear />;
+            break;
+        case PlayerEmote.Tears:
+            emote = <FaSadCry />;
+            break;
+        case PlayerEmote.Smile:
+            emote = <FaSmile />;
+            break;
+        default:
+            emote = null;
+    }
+
     return (
         <div className={classNames}>
             <div className={styles.nickname}>{player.nickname}</div>
             <div className={styles.icons}>
-                {player.isRoomMaster && (
+                {player.emote !== null && (
+                    <div className={styles.master}>{emote}</div>
+                )}
+                {player.emote === null && player.isRoomMaster && (
                     <div className={styles.master}>
                         <FaCrown />
                     </div>

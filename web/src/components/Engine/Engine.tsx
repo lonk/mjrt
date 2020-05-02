@@ -12,10 +12,12 @@ import {
     GameStateMessage,
     CurrentQuestionMessage,
     PlayersMessage,
-    ServerState
+    ServerState,
+    PlayerEmote
 } from '../../server/types';
 import { randomizeAnswers } from './randomizeAnswers';
 import styles from './Engine.module.css';
+import Emotes from '../Emotes/Emotes';
 
 export default function Engine() {
     const [countdown, setCountdown] = useState<number | null>(null);
@@ -83,6 +85,10 @@ export default function Engine() {
         if (vote !== null) serverClient.emit('vote', { vote });
     };
 
+    const selectEmote = (emote: PlayerEmote) => {
+        serverClient.emit('emote', { emote });
+    };
+
     const startGame = () => {
         serverClient.emit('startGame');
     };
@@ -131,6 +137,14 @@ export default function Engine() {
                     />
                 )}
             </Top>
+            {(serverState.gameState === GameState.WaitingForAnswers ||
+                serverState.gameState === GameState.DisplayScores) && (
+                <Emotes
+                    onSelected={selectEmote}
+                    gameState={serverState.gameState}
+                    chosenAnswer={chosenAnswer}
+                />
+            )}
             <div className={styles.players}>
                 <div className={styles.playersContainer}>
                     {serverState.players.map(player => (
