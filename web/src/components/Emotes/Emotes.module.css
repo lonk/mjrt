@@ -1,16 +1,38 @@
+.container {
+    width: 50px;
+}
+
 .emotes {
-    background: #006626;
+    flex-direction: column;
+    display: flex;
     text-align: center;
+    background: #171D27;
+    align-items: center;
+}
+
+@media screen and (max-width: 500px) {
+    .emotes {
+        position: fixed;
+        flex-direction: unset;
+        justify-content: center;
+        height: 50px;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .container {
+        width: 0px;
+    }
 }
 
 .emotes > button {
     background: transparent;
     border: 0;
-    height: 22px;
-    width: 22px;
+    height: 28px;
+    width: 28px;
     padding: 0px;
-    margin: 10px 7px;
+    margin: 10px;
     cursor: pointer;
-    color: #FAFAFA;
-    font-size: 22px;
+    color: #E0B00E;
+    font-size: 28px;
 }

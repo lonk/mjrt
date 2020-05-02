@@ -137,15 +137,12 @@ export default function Engine() {
                     />
                 )}
             </Top>
-            {(serverState.gameState === GameState.WaitingForAnswers ||
-                serverState.gameState === GameState.DisplayScores) && (
+            <div className={styles.players}>
                 <Emotes
                     onSelected={selectEmote}
                     gameState={serverState.gameState}
                     chosenAnswer={chosenAnswer}
                 />
-            )}
-            <div className={styles.players}>
                 <div className={styles.playersContainer}>
                     {serverState.players.map(player => (
                         <PlayerBox
@@ -155,6 +152,7 @@ export default function Engine() {
                         />
                     ))}
                 </div>
+                <div className={styles.emotePlaceholder} />
             </div>
             <Notify gameState={serverState.gameState} />
         </div>

@@ -7,7 +7,9 @@
 }
 
 .players {
-    max-width: 860px;
+    display: flex;
+    max-width: 960px;
+    min-width: 360px;
     width: 100%;
     margin: 0 auto;
     justify-content: left;
@@ -19,9 +21,17 @@
     padding: 10px;
 }
 
-@media screen and (max-width: 360px) {
-    .players-container {
+.emotePlaceholder {
+    width: 50px;
+}
+
+@media screen and (max-width: 500px) {
+    .playersContainer {
         padding: 5px;
+    }
+
+    .emotePlaceholder {
+        width: 0px;
     }
 }
 

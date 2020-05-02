@@ -3,7 +3,7 @@
     height: 40px;
     background: #fafafa;
     color: #181d27;
-    padding: 10px 10px;
+    padding: 10px;
     margin: 2px;
     display: inline-flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     font-size: 12px;
 }
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 500px) {
     .player {
         width: 71px;
         height: 30px;
@@ -54,7 +54,7 @@
     margin-right: 3px;
 }
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 500px) {
     .offline, .master {
         font-size: 13px;
     }
