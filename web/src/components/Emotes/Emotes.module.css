@@ -15,7 +15,7 @@
         position: fixed;
         flex-direction: unset;
         justify-content: center;
-        height: 50px;
+        height: 60px;
         bottom: 0;
         width: 100%;
     }
@@ -28,11 +28,13 @@
 .emotes > button {
     background: transparent;
     border: 0;
-    height: 28px;
-    width: 28px;
-    padding: 0px;
-    margin: 10px;
+    padding: 5px;
+    margin: 5px;
     cursor: pointer;
     color: #E0B00E;
-    font-size: 28px;
+}
+
+.emotes > button > svg {
+    height: 35px;
+    width: 35px;
 }
