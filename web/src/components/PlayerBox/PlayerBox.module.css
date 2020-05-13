@@ -5,10 +5,16 @@
     color: #181d27;
     padding: 10px;
     margin: 2px;
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     border-radius: 4px;
     border: 1px solid #afb1b4;
+}
+
+.player > svg {
+    width: 40px;
+    height: 40px;
+    margin: auto;
 }
 
 .nickname {

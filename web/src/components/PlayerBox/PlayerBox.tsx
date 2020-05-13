@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaHeart, FaCrown } from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
 import {
@@ -19,10 +19,20 @@ interface Props {
 }
 
 export default function PlayerBox({ player, serverState }: Props) {
+    const [isEmoteFullScreen, setisEmoteFullScreen] = useState(false);
     const classToApply = [styles.player];
     const answerIndex = serverState.answers.findIndex(
         answer => player.answer === answer.type
     );
+
+    useEffect(() => {
+        setisEmoteFullScreen(player.emote !== null);
+        if (player.emote !== null) {
+            setTimeout(() => {
+                setisEmoteFullScreen(false);
+            }, 2000);
+        }
+    }, [player.emote]);
 
     switch (answerIndex) {
         case 0:
@@ -72,23 +82,28 @@ export default function PlayerBox({ player, serverState }: Props) {
 
     return (
         <div className={classNames}>
-            <div className={styles.nickname}>{player.nickname}</div>
-            <div className={styles.icons}>
-                {player.emote !== null && (
-                    <div className={styles.emote}>{emote}</div>
-                )}
-                {player.emote === null && player.isRoomMaster && (
-                    <div className={styles.master}>
-                        <FaCrown />
+            {!isEmoteFullScreen && (
+                <>
+                    <div className={styles.nickname}>{player.nickname}</div>
+                    <div className={styles.icons}>
+                        {player.emote !== null && (
+                            <div className={styles.emote}>{emote}</div>
+                        )}
+                        {player.emote === null && player.isRoomMaster && (
+                            <div className={styles.master}>
+                                <FaCrown />
+                            </div>
+                        )}
+                        {player.offline && (
+                            <div className={styles.offline}>
+                                <FiWifiOff />
+                            </div>
+                        )}
+                        <div className={styles.lives}>{lives}</div>
                     </div>
-                )}
-                {player.offline && (
-                    <div className={styles.offline}>
-                        <FiWifiOff />
-                    </div>
-                )}
-                <div className={styles.lives}>{lives}</div>
-            </div>
+                </>
+            )}
+            {isEmoteFullScreen && emote}
         </div>
     );
 }
