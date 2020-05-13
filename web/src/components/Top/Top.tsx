@@ -1,7 +1,7 @@
 import React from 'react';
-import { FaTwitter, FaDiscord } from 'react-icons/fa';
 import Countdown from 'react-countdown';
-import { AudioManager } from '../AudioManager/AudioManager';
+import Icons from '../Icons/Icons';
+import AudioManager from '../AudioManager/AudioManager';
 import { ServerState, ChosenAnswer } from '../../server/types';
 import styles from './Top.module.css';
 
@@ -20,17 +20,13 @@ export default function Top({
 }: Props) {
     return (
         <div className={styles.top}>
-            <AudioManager serverState={serverState} chosenAnswer={chosenAnswer} />
+            <AudioManager
+                serverState={serverState}
+                chosenAnswer={chosenAnswer}
+            />
             <div className={styles.logo}>
                 <img src="/logo.png" alt="MJRT" width="150" />
-                <div className={styles.icons}>
-                    <a href="https://twitter.com/MjrtNet">
-                        <FaTwitter />
-                    </a>
-                    <a href="https://discord.gg/wqMxG4s">
-                        <FaDiscord />
-                    </a>
-                </div>
+                <Icons />
             </div>
             <div className={styles.content}>
                 {children}

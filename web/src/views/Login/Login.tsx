@@ -63,6 +63,10 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 allowPrivateCreation={!Boolean(id)}
             />
+            <div className={styles.motionTwin}>
+                Ce jeu est librement inspiré du génial{' '}
+                <a href="http://majority.muxxu.com">Majority</a> de la Motion Twin !
+            </div>
         </LoggedOut>
     );
 }

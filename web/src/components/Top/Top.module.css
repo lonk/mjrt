@@ -14,22 +14,6 @@
     padding: 20px;
 }
 
-.icons {
-    display: flex;
-    justify-content: center;
-    padding-top: 10px;
-    font-size: 28px;
-}
-
-.icons > a {
-    color: #5A7D7C;
-    margin: 0 5px;
-}
-
-.icons > a:hover {
-    color: #CCA403;
-}
-
 .content {
     margin: auto;
     text-align: center;

@@ -12,7 +12,7 @@ const audio = new Audio('/notify.mp3');
 const success = new Audio('/success.mp3');
 const failure = new Audio('/failure.mp3');
 
-export function AudioManager({ serverState, chosenAnswer }: Props) {
+export default function AudioManager({ serverState, chosenAnswer }: Props) {
     const [audioActivated, setAudioActivated] = useState(true);
 
     const doesPlayerWon = () => {

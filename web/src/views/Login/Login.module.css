@@ -9,7 +9,19 @@
 .private {
     margin-bottom: 10px;
     padding: 10px;
-    background: #CCA403;
+    background: #cca403;
     color: #181d27;
     border-radius: 4px;
+}
+
+.motionTwin {
+    margin-top: 10px;
+    color: #fafafa;
+    font-size: 12px;
+    padding: 10px 5px;
+    text-align: center;
+}
+
+.motionTwin > a {
+    color: #fafafa;
 }

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import Answer from '../Answer/Answer';
 import { serverClient } from '../../server';
-import { GameState, ChosenAnswer, ServerState, PlayerEmote } from '../../server/types';
-import Emotes from '../Emotes/Emotes';
+import { GameState, ChosenAnswer, ServerState } from '../../server/types';
 import styles from './Question.module.css';
 
 interface Props {

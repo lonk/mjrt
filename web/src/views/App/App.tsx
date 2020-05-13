@@ -23,14 +23,6 @@ export default function App() {
                     <Redirect to="/login" />
                 </Switch>
             </Router>
-            <div className={styles.motionTwin}>
-                Ce jeu est librement inspiré du génial{' '}
-                <a href="http://majority.muxxu.com">Majority</a> de la Motion
-                Twin !
-                <br />
-                N'hésitez pas à contribuer sur{' '}
-                <a href="https://github.com/lonk/mjrt">GitHub</a> !
-            </div>
         </div>
     );
 }
