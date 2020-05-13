@@ -17,7 +17,7 @@ export enum ChosenAnswer {
 export enum PlayerEmote {
     Laugh,
     Smile,
-    Sad,
+    Surprised,
     Tears
 }
 

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaLaughSquint, FaSadTear, FaSadCry, FaSmile } from 'react-icons/fa';
+import { ReactComponent as Tears } from '../../svg/Tears.svg';
+import { ReactComponent as Smile } from '../../svg/Smile.svg';
+import { ReactComponent as Laugh } from '../../svg/Laugh.svg';
+import { ReactComponent as Surprised } from '../../svg/Surprised.svg';
 import { PlayerEmote, GameState, ChosenAnswer } from '../../server/types';
 import styles from './Emotes.module.css';
 
@@ -29,45 +32,17 @@ export default function Emotes({ gameState, chosenAnswer, onSelected }: Props) {
         <div className={styles.container}>
             {displayEmotes && (
                 <div className={styles.emotes}>
-                    <button
-                        onClick={() => selectEmote(PlayerEmote.Laugh)}
-                        className={
-                            emote === PlayerEmote.Laugh
-                                ? styles.selected
-                                : undefined
-                        }
-                    >
-                        <FaLaughSquint />
+                    <button onClick={() => selectEmote(PlayerEmote.Laugh)}>
+                        <Laugh />
                     </button>
-                    <button
-                        onClick={() => selectEmote(PlayerEmote.Smile)}
-                        className={
-                            emote === PlayerEmote.Smile
-                                ? styles.selected
-                                : undefined
-                        }
-                    >
-                        <FaSmile />
+                    <button onClick={() => selectEmote(PlayerEmote.Smile)}>
+                        <Smile />
                     </button>
-                    <button
-                        onClick={() => selectEmote(PlayerEmote.Sad)}
-                        className={
-                            emote === PlayerEmote.Sad
-                                ? styles.selected
-                                : undefined
-                        }
-                    >
-                        <FaSadTear />
+                    <button onClick={() => selectEmote(PlayerEmote.Surprised)}>
+                        <Surprised />
                     </button>
-                    <button
-                        onClick={() => selectEmote(PlayerEmote.Tears)}
-                        className={
-                            emote === PlayerEmote.Tears
-                                ? styles.selected
-                                : undefined
-                        }
-                    >
-                        <FaSadCry />
+                    <button onClick={() => selectEmote(PlayerEmote.Tears)}>
+                        <Tears />
                     </button>
                 </div>
             )}

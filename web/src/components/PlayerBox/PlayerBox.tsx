@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    FaHeart,
-    FaCrown,
-    FaLaughSquint,
-    FaSadTear,
-    FaSadCry,
-    FaSmile
-} from 'react-icons/fa';
+import { FaHeart, FaCrown } from 'react-icons/fa';
 import { FiWifiOff } from 'react-icons/fi';
 import {
     Player,
@@ -14,6 +7,10 @@ import {
     ServerState,
     PlayerEmote
 } from '../../server/types';
+import { ReactComponent as Tears } from '../../svg/Tears.svg';
+import { ReactComponent as Smile } from '../../svg/Smile.svg';
+import { ReactComponent as Laugh } from '../../svg/Laugh.svg';
+import { ReactComponent as Surprised } from '../../svg/Surprised.svg';
 import styles from './PlayerBox.module.css';
 
 interface Props {
@@ -58,16 +55,16 @@ export default function PlayerBox({ player, serverState }: Props) {
     let emote: JSX.Element | null;
     switch (player.emote) {
         case PlayerEmote.Laugh:
-            emote = <FaLaughSquint />;
+            emote = <Laugh />;
             break;
-        case PlayerEmote.Sad:
-            emote = <FaSadTear />;
+        case PlayerEmote.Surprised:
+            emote = <Surprised />;
             break;
         case PlayerEmote.Tears:
-            emote = <FaSadCry />;
+            emote = <Tears />;
             break;
         case PlayerEmote.Smile:
-            emote = <FaSmile />;
+            emote = <Smile />;
             break;
         default:
             emote = null;
@@ -78,7 +75,7 @@ export default function PlayerBox({ player, serverState }: Props) {
             <div className={styles.nickname}>{player.nickname}</div>
             <div className={styles.icons}>
                 {player.emote !== null && (
-                    <div className={styles.master}>{emote}</div>
+                    <div className={styles.emote}>{emote}</div>
                 )}
                 {player.emote === null && player.isRoomMaster && (
                     <div className={styles.master}>

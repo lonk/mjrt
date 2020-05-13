@@ -8,7 +8,7 @@
     display: inline-flex;
     flex-direction: column;
     border-radius: 4px;
-    border: 1px solid #AFB1B4;
+    border: 1px solid #afb1b4;
 }
 
 .nickname {
@@ -38,7 +38,7 @@
     text-align: right;
     font-size: 12px;
     margin-top: 2px;
-    color: #FB4F4F;
+    color: #fb4f4f;
     height: 14px;
     flex: 1;
 }
@@ -54,9 +54,21 @@
     margin-right: 3px;
 }
 
+.emote > svg {
+    height: 20px;
+    width: 20px;
+    margin-right: 3px;
+}
+
 @media screen and (max-width: 500px) {
-    .offline, .master {
+    .offline,
+    .master {
         font-size: 13px;
+    }
+
+    .emote > svg {
+        width: 16px;
+        height: 16px;
     }
 }
 
@@ -65,23 +77,23 @@
 }
 
 .a {
-    background: #FFC09F;
+    background: #ffc09f;
     border: 1px solid #ff6e22;
 }
 
 .b {
-    background: #C5EFCB;
-    border: 1px solid #8CAA95;
+    background: #c5efcb;
+    border: 1px solid #8caa95;
 }
 
 .c {
-    background: #91BEE0;
-    border: 1px solid #6989A3;
+    background: #91bee0;
+    border: 1px solid #6989a3;
 }
 
 .answered {
-    background: #D9AE00;
-    border: 1px solid #997E0D;
+    background: #d9ae00;
+    border: 1px solid #997e0d;
 }
 
 .dead {
