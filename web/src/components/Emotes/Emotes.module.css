@@ -1,5 +1,6 @@
 .container {
     width: 50px;
+    min-width: 50px;
 }
 
 .emotes {
@@ -22,6 +23,7 @@
 
     .container {
         width: 0px;
+        min-width: unset;
     }
 }
 

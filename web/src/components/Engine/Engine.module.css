@@ -8,7 +8,7 @@
 
 .players {
     display: flex;
-    max-width: 960px;
+    max-width: 1008px;
     min-width: 360px;
     width: 100%;
     margin: 0 auto;
@@ -17,13 +17,57 @@
     flex: 1;
 }
 
+@media screen and (min-width: 897px) and (max-width: 1007px) {
+    .players {
+        max-width: 897px;
+    }
+}
+
+@media screen and (min-width: 786px) and (max-width: 896px) {
+    .players {
+        max-width: 786px;
+    }
+}
+
+@media screen and (min-width: 675px) and (max-width: 785px) {
+    .players {
+        max-width: 675px;
+    }
+}
+
+@media screen and (min-width: 564px) and (max-width: 674px) {
+    .players {
+        max-width: 564px;
+    }
+}
+
+@media screen and (min-width: 501px) and (max-width: 563px) {
+    .players {
+        max-width: 453px;
+    }
+}
+
+@media screen and (min-width: 445px) and (max-width: 500px) {
+    .players {
+        max-width: 445px;
+    }
+}
+
+@media screen and (max-width: 444px) {
+    .players {
+        max-width: 360px;
+    }
+}
+
 .playersContainer {
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
+    align-content: start;
 }
 
 .emotePlaceholder {
+    min-width: 50px;
     width: 50px;
 }
 
@@ -34,6 +78,7 @@
 
     .emotePlaceholder {
         width: 0px;
+        min-width: unset;
     }
 }
 
