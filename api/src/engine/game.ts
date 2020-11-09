@@ -18,12 +18,13 @@ export const buildGame = (isPrivate: boolean) => {
     const generator = buildQuestionGenerator();
     let playersById: Map<string, Player> = new Map();
     const emitter = new EventEmitter();
-    let gameState: GameState = GameState.WaitingForPlayers;
-    let stateStart: number = Date.now();
+    let gameState = GameState.WaitingForPlayers;
+    let stateStart = Date.now();
     let duration: number | null = null;
     let nextStepTimer: NodeJS.Timeout;
-    let round: number = 0;
+    let round = 0;
     let lastWinningAnswers: ChosenAnswer[] = [];
+    let locked = false;
 
     const addPlayer = (playerId: string, nickname: string) => {
         const isRoomMaster = playersById.size === 0 && isPrivate;
@@ -177,6 +178,14 @@ export const buildGame = (isPrivate: boolean) => {
         }
     };
 
+    const handleToggleLock = (playerId: string) => {
+        const player = playersById.get(playerId);
+
+        if (player && player.isRoomMaster) {
+            locked = !locked;
+        }
+    };
+
     const sendPlayers = () => emitter.emit('players');
 
     const generateQuestion = () => {
@@ -248,6 +257,7 @@ export const buildGame = (isPrivate: boolean) => {
         handlePlayerEmote,
         handleRoomReset,
         handleOfflineState,
+        handleToggleLock,
         emitter,
         generator,
         isPrivate,
@@ -268,6 +278,9 @@ export const buildGame = (isPrivate: boolean) => {
         },
         get lastWinningAnswers() {
             return lastWinningAnswers;
+        },
+        get locked() {
+            return locked;
         }
     };
 };
