@@ -97,15 +97,9 @@ export default function Engine() {
         serverClient.emit('resetRoom');
     };
 
-    const aboutToLock = (
-        <div className={styles.simpleText}>
-            En attente des derniers joueurs.
-        </div>
-    );
-
     const aboutToStart = (
         <div className={styles.simpleText}>
-            Les joueurs sont au complet ! La partie va pouvoir commencer.
+            La partie va bientôt commencer !
         </div>
     );
 
@@ -122,7 +116,6 @@ export default function Engine() {
                         onStart={startGame}
                     />
                 )}
-                {serverState.gameState === GameState.AboutToLock && aboutToLock}
                 {serverState.gameState === GameState.AboutToStart &&
                     aboutToStart}
                 {serverState.gameState === GameState.Finished && (
