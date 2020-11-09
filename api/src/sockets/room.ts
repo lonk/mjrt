@@ -56,9 +56,9 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         });
     });
 
-    const isGameLocked = () =>
-        game.gameState !== GameState.WaitingForPlayers &&
-        game.gameState !== GameState.AboutToLock;
+    // For now, game are never locked.
+    // Will be the case when i'll add the manuel locking feature
+    const isGameLocked = () => false;
 
     const handleSocket = (
         socket: SocketIO.Socket,
@@ -101,7 +101,7 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         socket.on('disconnect', () => {
             nbOnlinePlayers.labels(roomId).dec();
             game.handleOfflineState(playerId, true);
-            if (!isGameLocked()) {
+            if (game.gameState === GameState.WaitingForPlayers) {
                 socketsById.delete(playerId);
                 game.removePlayer(playerId);
                 nbSockets.labels(roomId).dec();
@@ -166,6 +166,7 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
             if (socket.disconnected) {
                 game.removePlayer(playerId);
                 socketsById.delete(playerId);
+                nbSockets.labels(roomId).dec();
             }
         }
     };

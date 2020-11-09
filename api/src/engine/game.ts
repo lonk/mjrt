@@ -11,7 +11,6 @@ export type Game = ReturnType<typeof buildGame>;
 
 export const buildGame = (isPrivate: boolean) => {
     const {
-        timeBeforeLock,
         timeBeforeGameLaunch,
         timeToAnswer,
         timeToDisplayAnswers
@@ -27,9 +26,18 @@ export const buildGame = (isPrivate: boolean) => {
     let lastWinningAnswers: ChosenAnswer[] = [];
 
     const addPlayer = (playerId: string, nickname: string) => {
-        const isRoomMaster =
-            Array.from(playersById.values()).length === 0 && isPrivate;
-        const player = buildPlayer(playerId, nickname, isRoomMaster);
+        const isRoomMaster = playersById.size === 0 && isPrivate;
+        const gameAlreadyStarted = ![
+            GameState.WaitingForPlayers,
+            GameState.AboutToStart
+        ].includes(gameState);
+
+        const player = buildPlayer(
+            playerId,
+            nickname,
+            isRoomMaster,
+            gameAlreadyStarted
+        );
 
         playersById.set(playerId, player);
         sendPlayers();
@@ -46,9 +54,6 @@ export const buildGame = (isPrivate: boolean) => {
         stateStart = Date.now();
 
         switch (gameState) {
-            case GameState.AboutToLock:
-                duration = timeBeforeLock;
-                break;
             case GameState.AboutToStart:
                 duration = timeBeforeGameLaunch;
                 break;
@@ -65,18 +70,11 @@ export const buildGame = (isPrivate: boolean) => {
     };
 
     const checkIfReadyToLauch = () => {
-        const players = Array.from(playersById.values());
-
         if (
-            players.length === 5 &&
+            playersById.size === 5 &&
             gameState === GameState.WaitingForPlayers &&
             !isPrivate
         ) {
-            updateGameState(GameState.AboutToLock);
-            nextStepTimer = setTimeout(launchGame, timeBeforeLock);
-        }
-
-        if (players.length === 50) {
             launchGame();
         }
     };
@@ -160,9 +158,8 @@ export const buildGame = (isPrivate: boolean) => {
 
     const handleStartGame = (playerId: string) => {
         const player = playersById.get(playerId);
-        const players = Array.from(playersById.values());
 
-        if (player && player.isRoomMaster && players.length > 2) {
+        if (player && player.isRoomMaster && playersById.size > 2) {
             launchGame();
         }
     };

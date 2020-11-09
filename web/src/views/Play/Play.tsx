@@ -11,7 +11,7 @@ import {
 
 export default function Play() {
     const history = useHistory();
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const [socketState, setSocketState] = useState(SocketState.Connecting);
     const [registerState, setRegisterState] = useState(RegisterState.Pending);
 
@@ -90,8 +90,8 @@ export default function Play() {
                 )}
                 {registerState === RegisterState.RoomLocked && (
                     <span>
-                        La partie dans cette salle est en cours, il n'est pas
-                        possible de la rejoindre pour le moment.
+                        Le créateur de la partie a bloqué les nouvelles
+                        connexions.
                     </span>
                 )}
             </LoggedOut>

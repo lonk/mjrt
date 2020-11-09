@@ -1,5 +1,4 @@
 export const getTimers = () => {
-    const timeBeforeLock = parseInt(process.env.TIME_BEFORE_LOCK || '0', 10);
     const timeBeforeGameLaunch = parseInt(
         process.env.TIME_BEFORE_LAUNCH || '0',
         10
@@ -11,7 +10,6 @@ export const getTimers = () => {
     );
 
     return {
-        timeBeforeLock,
         timeBeforeGameLaunch,
         timeToAnswer,
         timeToDisplayAnswers
