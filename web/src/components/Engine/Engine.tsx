@@ -29,7 +29,8 @@ export default function Engine() {
         answers: [],
         players: [],
         round: 0,
-        lastWinningAnswers: []
+        lastWinningAnswers: [],
+        locked: false
     });
 
     const updateServerState = (updatedFields: Partial<ServerState>) =>
@@ -46,13 +47,15 @@ export default function Engine() {
                 duration,
                 round,
                 isPrivate,
-                lastWinningAnswers
+                lastWinningAnswers,
+                locked
             }: GameStateMessage) => {
                 updateServerState({
                     gameState,
                     round,
                     isPrivate,
-                    lastWinningAnswers
+                    lastWinningAnswers,
+                    locked
                 });
                 setCountdown(duration ? Date.now() + duration : null);
             }
@@ -97,6 +100,10 @@ export default function Engine() {
         serverClient.emit('resetRoom');
     };
 
+    const toggleLock = () => {
+        serverClient.emit('toggleLock');
+    };
+
     const aboutToStart = (
         <div className={styles.simpleText}>
             La partie va bientôt commencer !
@@ -109,6 +116,7 @@ export default function Engine() {
                 countdown={countdown}
                 serverState={serverState}
                 chosenAnswer={chosenAnswer}
+                onToggleLock={toggleLock}
             >
                 {serverState.gameState === GameState.WaitingForPlayers && (
                     <WaitingForPlayers

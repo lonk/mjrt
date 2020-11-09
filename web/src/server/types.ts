@@ -41,6 +41,7 @@ export type GameStateMessage = {
     isPrivate: boolean;
     round: number;
     lastWinningAnswers: ChosenAnswer[];
+    locked: boolean;
 };
 
 export type CurrentQuestionMessage = {
@@ -84,4 +85,5 @@ export interface ServerState {
     players: Player[];
     round: number;
     lastWinningAnswers: ChosenAnswer[];
+    locked: boolean;
 }

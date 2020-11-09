@@ -25,20 +25,21 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     });
 
     game.emitter.on('gameState', () => {
-        const { gameState, duration, round, lastWinningAnswers } = game;
+        const { gameState, duration, round, lastWinningAnswers, locked } = game;
         io.to(roomId).emit('gameState', {
             gameState,
             duration,
             round,
             isPrivate,
-            lastWinningAnswers
+            lastWinningAnswers,
+            locked
         });
 
         if (gameState === GameState.WaitingForPlayers) {
             purgeRoom();
         }
 
-        if (gameState === GameState.AboutToStart) {
+        if (gameState === GameState.WaitingForAnswers && round === 1) {
             emitter.emit('lock');
         }
 
@@ -56,10 +57,6 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         });
     });
 
-    // For now, game are never locked.
-    // Will be the case when i'll add the manuel locking feature
-    const isGameLocked = () => false;
-
     const handleSocket = (
         socket: SocketIO.Socket,
         playerId: string,
@@ -73,7 +70,7 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
             return;
         }
 
-        if (!formerSocket && isGameLocked()) {
+        if (!formerSocket && game.locked) {
             socket.emit('registration', { code: RegisterState.RoomLocked });
             return;
         }
@@ -156,6 +153,10 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
 
         socket.on('resetRoom', () => {
             game.handleRoomReset(playerId);
+        });
+
+        socket.on('toggleLock', () => {
+            game.handleToggleLock(playerId);
         });
     };
 
