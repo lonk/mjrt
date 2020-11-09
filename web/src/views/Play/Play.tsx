@@ -11,7 +11,7 @@ import {
 
 export default function Play() {
     const history = useHistory();
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const [socketState, setSocketState] = useState(SocketState.Connecting);
     const [registerState, setRegisterState] = useState(RegisterState.Pending);
 
