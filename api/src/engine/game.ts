@@ -29,7 +29,17 @@ export const buildGame = (isPrivate: boolean) => {
     const addPlayer = (playerId: string, nickname: string) => {
         const isRoomMaster =
             Array.from(playersById.values()).length === 0 && isPrivate;
-        const player = buildPlayer(playerId, nickname, isRoomMaster);
+        const gameAlreadyStarted = ![
+            GameState.WaitingForPlayers,
+            GameState.AboutToLock
+        ].includes(gameState);
+
+        const player = buildPlayer(
+            playerId,
+            nickname,
+            isRoomMaster,
+            gameAlreadyStarted
+        );
 
         playersById.set(playerId, player);
         sendPlayers();

@@ -56,9 +56,9 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
         });
     });
 
-    const isGameLocked = () =>
-        game.gameState !== GameState.WaitingForPlayers &&
-        game.gameState !== GameState.AboutToLock;
+    // For now, game are never locked.
+    // Will be the case when i'll add the manuel locking feature
+    const isGameLocked = () => false;
 
     const handleSocket = (
         socket: SocketIO.Socket,

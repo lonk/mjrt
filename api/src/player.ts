@@ -26,11 +26,12 @@ export interface Player {
 export const buildPlayer = (
     id: string,
     nickname: string,
-    isRoomMaster: boolean
+    isRoomMaster: boolean,
+    gameAlreadyStarted: boolean
 ): Player => ({
     id,
     nickname,
-    lives: 3,
+    lives: gameAlreadyStarted ? 0 : 3,
     emote: null,
     answer: null,
     hiddenAnswer: null,
