@@ -30,6 +30,8 @@ export default function Notify({ gameState }: Props) {
     }, [gameState]);
 
     const registerSw = async () => {
+        if (!('serviceWorker' in navigator)) return;
+
         const navigatorRegistration = await navigator.serviceWorker.register(
             '/sw.js'
         );
