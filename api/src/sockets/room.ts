@@ -25,20 +25,21 @@ export const buildRoom = (roomId: string, isPrivate: boolean) => {
     });
 
     game.emitter.on('gameState', () => {
-        const { gameState, duration, round, lastWinningAnswers } = game;
+        const { gameState, duration, round, lastWinningAnswers, locked } = game;
         io.to(roomId).emit('gameState', {
             gameState,
             duration,
             round,
             isPrivate,
-            lastWinningAnswers
+            lastWinningAnswers,
+            locked
         });
 
         if (gameState === GameState.WaitingForPlayers) {
             purgeRoom();
         }
 
-        if (gameState === GameState.AboutToStart) {
+        if (gameState === GameState.WaitingForAnswers && round === 1) {
             emitter.emit('lock');
         }
 

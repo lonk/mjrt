@@ -184,6 +184,8 @@ export const buildGame = (isPrivate: boolean) => {
         if (player && player.isRoomMaster) {
             locked = !locked;
         }
+
+        emitter.emit('gameState');
     };
 
     const sendPlayers = () => emitter.emit('players');
