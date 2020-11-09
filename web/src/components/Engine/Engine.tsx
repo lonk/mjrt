@@ -102,6 +102,7 @@ export default function Engine() {
 
     const toggleLock = () => {
         serverClient.emit('toggleLock');
+        updateServerState({ locked: !serverState.locked });
     };
 
     const aboutToStart = (

@@ -181,11 +181,9 @@ export const buildGame = (isPrivate: boolean) => {
     const handleToggleLock = (playerId: string) => {
         const player = playersById.get(playerId);
 
-        if (player && player.isRoomMaster) {
+        if (player && player.isRoomMaster && isPrivate) {
             locked = !locked;
         }
-
-        emitter.emit('gameState');
     };
 
     const sendPlayers = () => emitter.emit('players');
