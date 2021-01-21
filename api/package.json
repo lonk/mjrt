@@ -8,7 +8,7 @@
         "express": "^4.17.1",
         "prom-client": "^12.0.0",
         "shortid": "^2.2.15",
-        "socket.io": "^2.3.0"
+        "socket.io": "^2.4.0"
     },
     "devDependencies": {
         "@types/dotenv-safe": "^8.1.0",
